@@ -2,70 +2,86 @@
 output: 
   pdf_document:
     citation_package: biblatex
-      
-title: '**Proposal: Stop correcting for class imblance?**'
+    
+title: '**Proposal: assessing the impact of class imbalance corrections on model calibration.**'
 author: "**Alex Carriero (9028757) \\vspace{4in}**"
 bibliography: "carriero-proposal.bib"
 
-fontsize: "11pt"
-geometry: margin=25mm
-nocite: |
-  @bow, @myths, @mcc, @lp, @hotels, @kaur, @stop, @to_smote, @1per10
-  @pre_ensemble, @rusboost, @reality, @old_wine, @econ_ml
+fontsize: "12pt"
+geometry: margin=22mm
+
+header-includes: 
+  \usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
 ---
 
 
-Date: 13/10/2022\
+**Date**: 13/10/2022\
 \
-Word Count: XXX\
+**Word Count**: 735\
 \
-Program: Methodology and Statistics for Behvarioual, Biomedical, and Social Sciences.\
+**Program**: Methodology and Statistics for Behavioral, Biomedical, and Social Sciences.\
 \
-Supervisors: Maarten van Smeden (Utrecht Medical Center Utrecht), Ben van Calster (Leuven University and Leiden University Medical Center) and Kim Luijken (Utrecht Medical Center Utrecht). 
+**Supervisors**: Maarten van Smeden (Utrecht Medical Center Utrecht), Ben van Calster (Leuven University and Leiden University Medical Center) and Kim Luijken (Utrecht Medical Center Utrecht). 
 
-Host Institution: Julius Center for Health Science and Primary Care, UMC.\
+**Host Institution**: Julius Center for Health Science and Primary Care, UMC.\
 \
-Candidate Journal: Statistics in Medicine.\
+**Candidate Journal**: Statistics in Medicine.\
 \
-FETC-approved: 22-1809
+**FETC-approved**: 22-1809
 
 \newpage 
 
 ### 1 | Introduction
-\ \ \ \ \ The presence of prediction modelling in the field of medicine is rapidly increasing. In a clinical setting, the goal of prediction modelling is often to (accurately) predict a patient's risk of experiencing an event (e.g., a stroke). In other words, to predict which binary class (event or no event) a patient is most likely to belong to. Due to the (thankfully) rare nature of many diseases, the data available to train clinical prediction models are often heavily imbalanced  (i.e., the number of patients in one class dramatically outnumbers the other) [@summary_m]. This is referred to as class imbalance, and is seen as a major problem in the field of machine learning [@summary_m].
+\ \ \ \ \ Prediction modelling in medicine is gaining increasing attention; clinicians are often interested in predicting a patient's risk of disease. Due to the (thankfully) rare nature of many diseases, the data available to train clinical prediction models are often heavily imbalanced  (i.e., the number of patients in one class dramatically outnumbers the other) [@summary_m]. This is referred to as class imbalance.   Class imbalance is seen major problem in the field of machine learning as it is known to degrade model performance [@yu].  Consequently, imbalance correction methodologies are proposed as a solution [@yu].\
 
-\ \ \ \ \ Class imbalance is thought to diminish the quality of prediction models [@yu]. Quality is multifaceted.  It is characterized by three criteria: accuracy, discrimination, and calibration. Accuracy refers to the proportion of patients that a model classifies correctly (after a risk threshold is imposed). Discrimination refers to a model's ability to yield higher risk estimates for patients in the positive class than for those in the negative class.  Finally, calibration refers to the reliability of the risk predictions themselves; for instance, a poorly calibrated model may produce risk predictions that consistently over- or under-estimate reality, or produce risk estimates which are too extreme (too close of 0 or 1) or too modest. 
+\ \ \ \ \ An ideal imbalance correction will improve all aspects of model performance. These criteria include: classification accuracy, discrimination and calibration.  Accuracy refers to the proportion of patients that a model classifies correctly (after a risk threshold is imposed). Discrimination refers to a model's ability to yield higher risk estimates for patients in the positive class than for those in the negative class.  Finally, calibration refers to the reliability of the risk predictions themselves; for instance, a poorly calibrated model may produce risk predictions that consistently over- or under-estimate reality, or produce risk estimates which are too extreme (too close of 0 or 1) or too modest [@achilles].\
 
-\ \ \ \ \  Calibration is the metric which is most interesting when developing clinical prediction models. This is because in practice, risk predictions from the model are given directly to a clinician who will use the information to council patients and inform treatment decisions.  It is essential that these predictions are accurate (i.e., calibration is good).  Otherwise, the personal costs to the patient may be enormous. Furthermore, it is entirely possible for a model to have great accuracy and discrimination while calibration is poor [@achilles].  Thus, all three criteria must be considered when discussing the impact of imbalance on the quality of clinical prediction models.  This is rarely the case and unfortunately, it is calibration that is often forgotten [@achilles]. 
+\ \ \ \ \ Class imbalance is not unique to medical data sets and literature introducing imbalance correction methods arises from many disciplines. An abundance of imbalance corrections exist and are summarized by [@summary_b; @summary_lp; @summary_m; @summary_h; @summary_k].  Information regarding the effect of these corrections on model calibration is sparse.  In medicine, it is essential that model calibration is assessed.  This is because in practice, risk predictions from the model are given directly to a clinician who will use the information to council patients and inform treatment decisions. If a model is poorly calibrated, the personal costs to the patient may be enormous. It is entirely possible for a model to exhibit excellent classification accuracy and discrimination while calibration is poor [@achilles].  Therefore, assessing only discrimination and accuracy is insufficient.\
 
-\ \ \ \ \ Class imbalance is not unique to medical data sets.  Thus, literature focused on imbalance correction methods arises from many disciplines.  An abundance of imbalance corrections exist and are well summarized by [@summary_b; @summary_lp; @summary_m; @summary_h; @summary_k].  Yet, information regarding the effect of these corrections on model calibration is sparse.  One recent study demonstrated that implementing imbalance corrections lead to dramatically deteriorated model calibration, to the extent that no correction was recommended [@ruben]. In this study, models were developed using logistic regression and penalized (ridge) logistic regression [@ruben].  
+\ \ \ \ \  Only one study has assessed the impact of imbalance corrections on model calibration. @ruben demonstrated that implementing imbalance corrections lead to dramatically deteriorated model calibration, to the extent that no correction was recommended [@ruben].  In this study, models were developed using logistic regression and penalized (ridge) logistic regression [@ruben].  Motivated by the work of @ruben, we must ensure that the "cure" is not worse than the disease. In our research, we aim to assess the impact of imbalance corrections on model calibration for prediction models trained with a wider variety of classification algorithms including: linear classifiers, ensemble learning algorithms and algorithms specifically designed to handle class imbalance. Furthermore, we aim to answer the question: can imbalance corrections improve overall model performance without comprising model calibration? 
 
-\ \ \ \ \ Motivated by the work of @ruben, we must ensure that the "cure" is not worse than the disease. In our research, we aim to assess the impact of imbalance corrections on model calibration for prediction models trained with a wider variety of classification algorithms including: linear classifiers, ensemble learning algorithms and algorithms specifically designed to handle class imbalance. Furthermore, we aim to answer the question: can imbalance corrections improve overall model performance without comprising model calibration? 
-
-* expectations specified ? 
-
-\newpage
 
 ### 2| Analytic Strategy
 
-To provide a fair comparison of imbalance corrections a simulation study will be designed and implemented.
+We will evaluate the performance of several imbalance corrections in a simulation study. We will adhere to the ADEMP guidelines for the design and reporting of our simulation [@tim_morris].
 
-#### 2.1| Simulation Study\ 
+#### 2.1| Simulation Study\
 \
-\
-We will adhere to the ADEMPT guidelines for the design and reporting of our simulation study [@tim_morris]. 
-\
-The aim of the simulation study is to determine which pair(s) of imbalance correction and classification algorithm can outperform the classification algorithm alone.\
+The aim of the simulation study is to determine which pair(s) of imbalance correction and classification algorithm can outperform the classification algorithms without imbalance corrections.\
 \
 Imbalanced data will be simulated to reflect 27 scenarios.  The following criteria will be varied: number of predictors, event fraction and sample size.  The number of predictors will vary through the set {8,16,32} and event fraction, through the set {0.5, 0.2, 0.02}. The minimum sample size for the prediction model (N) will be computed according to formulae from @riley.  Sample size will then vary through the set {$\frac{1}{2}$N, N and 2N}.\
 \
-Under each scenario, 2000 data sets will be generated.  More specifically, test and training data will be generated such that the training set is 10x larger than the test set. 
-\
-Finally, each simulated data set will be analysed  by 30 methods = 6 (classification algorithms) x 5 (imbalance corrections).  Classification algorithms will include: Logistic Regression, Support Vector Machine, Random Forest, XG Boost, RUSBoost, and Easy Ensemble.  Imbalance corrections will include: random under sampling, random over sampling, synthetic minority over sampling (SMOTE), SMOTE-ENN and no correction.  
-\
-Finally, performance criteria will include: AUROC, MCC, accuracy, sensitivity and specificity, calibration intercept and calibration slope. Calibration intercept is the primary metric.\
+Under each scenario, 2000 data sets will be generated.  More specifically, test and training data will be generated such that the training set is 10x larger than the test set. Each simulated data set will be analysed by 30 methods = 6 (classification algorithms) x 5 (imbalance corrections).  The classification algorithms and imbalance corrections we will include in our simulation are detailed in Table 1. 
 
-* something about reporting results ? 
+```{r, echo = F, warning = F, message = F}
+library(tidyverse)
+library(kableExtra)
+
+methods     <- c("Logistic Regression", 
+                 "Support Vector Machine", 
+                 "Random Forest", 
+                 "XG Boost", 
+                 "RUSBoost", 
+                 "Easy Ensemble")
+
+corrections <- c("None", 
+                 "RUS (random under sampling)", 
+                 "ROS (random over sampling)", 
+                 "SMOTE (synthetic majority over sampling)", 
+                 "SMOTE - ENN (SMOTE - edited nearest neighbours)", 
+                 "  ")
+
+count       <- c(1:6)
+
+x <- as.data.frame(cbind(count, methods, corrections))
+colnames(x) <- c("Index", "Classification Algorithms", "Imbalance Corrections")
+
+x %>% 
+  kbl(booktabs = T, caption = "Classification algorithms and imbalance corrections to be evaluated.") %>% 
+  kable_styling(latex_options = c("striped", "hold_position"))
+```
+Finally, performance criteria will include measures of model discrimination, accuracy and calibration.  Discrimination will be measured by area under the receiver operator curve (AUROC).  Classification accuracy by Matthew's correlation coefficient (MCC), overall accuracy, sensitivity and specificity.  Finally calibration will be measured in terms of calibration intercept and calibration slope. 
+
 
 #### 2.2| Software\
 \

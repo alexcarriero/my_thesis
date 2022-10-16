@@ -1,0 +1,27 @@
+---
+title: ''
+output: 
+    pdf_document:
+      citation_package: biblatex
+      
+bibliography: carriero-proposal.bib
+
+fontsize: "12pt"
+geometry: margin=22mm
+
+nocite: |
+  @bow, @myths, @mcc, @lp, @hotels, @kaur, @stop, @to_smote, @1per10, @read_smote, @read_easy,     
+  @read_enn, @pre_ensemble, @rusboost, @reality, @old_wine, @econ_ml, @read_xg, @read_svm, 
+  @read_auroc, @read_enns, @something_smote @read_netben, @read_nog, @read_tr
+  
+header-includes: 
+  \usepackage[backend=biber,style=numeric,sorting=none]{biblatex}
+  \defbibheading{bibliography}[\refname]{}
+  \pagenumbering{gobble}
+---
+
+##  Further Reading
+
+
+
+
