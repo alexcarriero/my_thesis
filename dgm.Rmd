@@ -1,0 +1,230 @@
+---
+title: "Data Generating Mechanism"
+author: "Alex Carriero"
+output: html_document
+---
+
+# proof of concept example
+```{r}
+# Distinct Distributions for Classes 
+library(tidyverse)
+library(MASS)
+
+sigma <- matrix(c(1,0,0,1), nrow= 2, ncol = 2)
+
+n1 <- 1000
+mu1 <- c(0,0)
+class_1 <- mvrnorm(n1, mu1, sigma)
+colnames(class_1) <- c("P1", "P2")
+
+n0  <- 50
+mu0 <- c(-1,1)
+class_0 <- mvrnorm(n0, mu0, sigma)
+colnames(class_0) <- c("P1", "P2")
+
+outcome <- c(rep(1, n1), rep(0, n0))
+
+df <- cbind(rbind(class_1, class_0), outcome)%>% 
+      as.data.frame() %>% 
+      mutate(outcome = as.factor(outcome))
+```
+
+```{r, warning = F, message = F}
+df %>% 
+  ggplot(aes(x = P1, y = P2, col = outcome)) + 
+  geom_point() + 
+  theme_minimal() + 
+  ggtitle("Simulated Data:")
+```
+
+```{r}
+library(pROC)
+mod  <- glm(outcome~., family = "binomial", data = df)
+pred <- predict(mod, type="response")
+auc(df$outcome, pred)
+```
+
+
+# test scenarios 
+```{r}
+generate_data <- function(ev = 0.2, mu = c(0,0), delta = c(-1, 1), var = "equal"){
+  
+  if (var == "equal"){
+  sigma <- matrix(c(1,0,0,1), nrow= 2, ncol = 2)
+  }
+  
+  if( is.numeric(var) == T){
+  sigma <- matrix(c(1,0,0,var), nrow= 2, ncol = 2)
+  }
+    
+
+  n1 <- 1000
+  mu1 <- mu
+  class_1 <- mvrnorm(n1, mu1, sigma)
+  colnames(class_1) <- c("P1", "P2")
+
+  n0  <- ev*n
+  mu0 <- mu + delta
+  class_0 <- mvrnorm(n0, mu0, sigma)
+  colnames(class_0) <- c("P1", "P2")
+
+  outcome <- c(rep(1, n1), rep(0, n0))
+
+  df <- cbind(rbind(class_1, class_0), outcome)%>% 
+        as.data.frame() %>% 
+        mutate(outcome = as.factor(outcome))
+  
+  return(df)
+}
+```
+
+```{r, message = F}
+# small simulation vary variance ratio  -- means 1 unit different 
+set.seed(311)
+auc <- c()
+
+# equal variance 
+for (i in 1:1000){                                                # auc = 0.84 (0.04)
+  
+  df      <- generate_data()
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+# variance ratio 2:1
+for (i in 1:1000){                                                # auc = 0.81 (0.05)
+  
+  df      <- generate_data(var = 2)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+# variance ratio 4:1
+for (i in 1:1000){                                                # auc = 0.79 (0.05)
+  
+  df      <- generate_data(var = 4)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+# variance ratio 10:1
+# auc 0.775
+# sd  0.05
+for (i in 1:1000){                                                # auc = 0.77 (0.05)
+  
+  df      <- generate_data(var = 10)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+```
+
+```{r, message = F}
+# small simulation vary means -- equal variance 
+set.seed(511)
+
+# means equal 
+mu = c(0, 0)
+delta = c(0, 0)
+
+for (i in 1:1000){
+  
+  df      <- generate_data(mu= mu, delta = delta)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+
+# means 1 unit off 
+mu = c(0, 0)
+delta = c(-1, -1)
+
+for (i in 1:1000){                                                # auc = 0.58 (0.05)
+  
+  df      <- generate_data(mu= mu, delta = delta)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+# means 1 unit off 
+mu = c(0, 0)
+delta = c(-1.5, 1.5)
+
+for (i in 1:1000){                                                # auc = 0.85 (0.04)
+  
+  df      <- generate_data(mu= mu, delta = delta)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+# means 1.5 units off 
+mu = c(0, 0)
+delta = c(-1.5, 1.5)
+
+for (i in 1:1000){                                                # auc = 0.93 (0.03)
+  
+  df      <- generate_data(mu= mu, delta = delta)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+# means vary by different amounts
+mu = c(0, 0)
+delta = c(-1.5, 1)
+
+for (i in 1:1000){                                                # auc = 0.90 (0.03)
+  
+  df      <- generate_data(mu= mu, delta = delta)
+  
+  mod     <- glm(outcome~., family = "binomial", data = df)
+  pred    <- predict(mod, type="response")
+  auc[i]  <- auc(df$outcome, pred)
+}
+
+mean(auc)
+sd(auc)
+
+
+# means 2 units off
+# no: auc = 0.977, some models warn probability 0 or 1 occured 
+```
+
