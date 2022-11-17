@@ -14,8 +14,8 @@ output: html_document
 # predictor variance within groups 
 # predictor variance between groups 
 
-# predictor covariance within groups 
-# predictor covariance between groups 
+# predictor covariance within groups   ---  no
+# predictor covariance between groups  ---  no
 ```
 
 # proof of concept example
