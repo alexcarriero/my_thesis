@@ -8,10 +8,14 @@ output: html_document
 
 # What we can vary: 
 
-# predictor means within groups
+# predictor means within groups     
 # predictor means between groups 
+
 # predictor variance within groups 
-# predictor variance between groups
+# predictor variance between groups 
+
+# predictor covariance within groups 
+# predictor covariance between groups 
 ```
 
 # proof of concept example
@@ -26,15 +30,16 @@ library(tableone)
 ```{r}
 scenario <- function(npred){
 
-x <- 0.5                      # mean difference between classes 
+x <- 0.3                      # mean difference between classes 
+y <- 0.3                      # varcov difference between classes 
 
 npred <-  npred 
-mu    <-  c(rep(0,npred))
-delta <-  c(rep(x,npred))
-sigma <-  diag(npred)
+mu    <-  c(rep(0,npred))              # vector of means
+delta <-  c(rep(x,npred))              # vector of deltas (between class mean differences)
+sigma <-  diag(npred)                  # varcov matrix
+dsig  <-  diag(c(rep(y, npred)))       # matrix of deltas (between class varcov differences)
 
-
-return(list(npred, mu, delta, sigma))
+return(list(npred, mu, delta, sigma, dsig))
 }
 ```
 
@@ -45,6 +50,7 @@ generate_data <- function(inn, ev = 0.2){
   mu    = inn[[2]]
   delta = inn[[3]]
   sigma = inn[[4]]
+  dsig  = inn[[5]]
   
   # calculate sample size   
   n = 1000 
@@ -52,12 +58,14 @@ generate_data <- function(inn, ev = 0.2){
   # positive class
   n1 <- ev*n
   mu1 <- mu + delta
-  class_1 <- mvrnorm(n1, mu1, sigma)
+  s1  <- sigma - dsig
+  class_1 <- mvrnorm(n1, mu1, s1)
 
   # negative class
   n0  <- (1-ev)*n
   mu0 <- mu
-  class_0 <- mvrnorm(n0, mu0, sigma)
+  s0  <- sigma
+  class_0 <- mvrnorm(n0, mu0, s0)
 
   outcome <- c(rep(1, n1), rep(0, n0))
 
@@ -108,7 +116,7 @@ return(auc)
 
 ```{r}
 # generate data
-df <- generate_data(scenario(npred = 8))
+df <- generate_data(scenario(npred = 8), ev = 0.2)
 df
 ```
 
@@ -127,10 +135,10 @@ set.seed(311)
 auc <- c()
 
 for (i in 1:2000){                                          
-  df      <- generate_data(scenario(npred = 8))
+  df      <- generate_data(scenario(npred = 8), ev = 0.2)
   auc[i]  <- get_auc(df)
 }
 
-mean(auc)   # 0.85
+mean(auc)   # 0.75
 sd(auc)     # 0.02
 ```

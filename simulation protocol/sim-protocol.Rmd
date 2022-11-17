@@ -21,14 +21,17 @@ library(kableExtra)
 
 ### 1.1  Aim
 
-We aim to assess the impact of common class imbalance corrections on the performance of clinical prediction models. In this study, we will systematically compare the effect of imbalance corrections on the performance of several clinical prediction models developed using various machine learning methods.  All models are developed for dichotomous risk prediction. In particular, we aim to determine if class imbalance corrections can lead to improved model performance without compromising model calibration. 
+We aim to building on the work of @ruben by considering a wider variety of classification algorithms and imbalance corrections. In our simulation, imbalance corrections will be applied in combination with a variety of classification algorithms. We aim to determine if any pair of imbalance correction and classification algorithm can outperform the classification algorithm with no imbalance correction. In particular, we aim to determine if imbalance corrections can lead to improved model performance without compromising model calibration.
 
 ### 1.2  Data-Generating Mechanisms
 
-~ insert data generating mechanism details ~
+Data for each class is generated independently from two distinct multivariate normal distributions.\
+\
+**Class 1:** $X \sim mvn( \mu_1, \Sigma_1)$\
+\
+**Class 0:** $X \sim mvn( \mu_0, \Sigma_0)$\
 
-* discuss how control of auc is maintained, present mean (sd) auc for generated data sets 
-* how are the interaction effects achieved
+The means and covariance matrices of the data generating distributions are selected to produce an auc of XXX under various scenarios. 
 
 Imbalanced data will be simulated to reflect 27 (3 x 3 x 3) unique scenarios.  This is achieved by varying the following three properties of the data: number of predictors, event fraction and sample size.  The number of predictors will vary through the set {8,16,32} and event fraction, through the set {0.5, 0.2, 0.02}. The minimum sample size for the prediction model (N) will be computed according to formulae presented in @riley.  Sample size will then vary through the set {$\frac{1}{2}$N, N and 2N}.\
 
@@ -51,7 +54,10 @@ x %>%
   footnote(symbol = "N represents the minimum sample size for the prediction model.")
 ```
 
-Under each scenario, $2000$ data sets will be generated. Data sets will be comprised of training and test data with a ratio of 10:1. For each data set, five imbalance corrections will be applied to the training set.  Subsequently, six prediction models will be developed for each of the imbalance corrected training sets.  In other words, for each data set, the training data will be used to train $5$ x $6$ $= 30$ imbalance correction - prediction model combinations.  Finally, out-of sample predictive performance will be assessed for each imbalance correction - prediction model combination using the test data.
+Under each scenario, $2000$ data sets will be generated. Data sets will be comprised of training and test data with a ratio of 10:1. For each data set, five imbalance corrections will be applied to the training set.  Subsequently, six prediction models will be developed for each of the imbalance corrected training sets.  In other words, each data set will result in,  5 corrected training sets x 6 classification algorithms = 30 analyses .  Finally, out-of sample predictive performance will be assessed for each imbalance correction - prediction model combination using the test data.
+
+For each scenario, the parameters of the data generating mechanism, are included in the Table 2. Mean and standard deviation estimates of AUC are calculated based on a small simulation,  in which 2000 data sets are generated. This is done to detail the expected mean and variation in AUC for each scenario in the full simulation study. 
+
 
 ### 1.3 Estimands
 
@@ -59,7 +65,7 @@ The focus of this study is the out-of-sample predictive performance of clinical 
 
 ### 1.4  Methods
 
-To investigate the effect of common class imbalance corrections on model performance, a full-factorial simulation design will be implemented.  Five imbalance corrections will be implemented for each of six classification algorithms. The classification algorithms and imbalance corrections we will include in our simulation are detailed in Tables 2 and 3 respectively.\
+To investigate the effect of common class imbalance corrections on model performance, a full-factorial simulation design will be implemented.  Five imbalance corrections will be implemented for each of six classification algorithms. The classification algorithms and imbalance corrections we will include in our simulation are detailed in Tables 3 and 4 respectively.\
 \
 All models will be trained using training data sets.  Out-of-sample performance will be then be assessed using the test data.  
 
@@ -128,7 +134,9 @@ x %>%
 
 ### 1.5 Performance Measures
 
-Out-of-sample model performance will be assessed using measures of discrimination, accuracy and calibration.  Discrimination will be measured by area under the receiver operator curve ($\Delta$C-statistic). Four measures of accuracy will be reported: overall accuracy, Matthew's correlation coefficient, sensitivity and specificity.  Finally, calibration will be measured in terms of calibration intercept and slope.  
+Out-of-sample model performance will be assessed using measures of discrimination, accuracy and calibration.  Discrimination will be measured by area under the receiver operator curve ($\Delta$C-statistic). Four measures of accuracy will be reported: overall accuracy, Matthew's correlation coefficient, sensitivity and specificity. Calibration will be measured in terms of calibration intercept and slope. Finally, model calibration will be visualized using flexible model calibration curves.\
+\
+For measures of accuracy, a decision threshold must be imposed.  ~ choose a dt / explain choice ~
 
 \newpage
 
