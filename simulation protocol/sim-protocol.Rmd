@@ -72,7 +72,7 @@ N    <- c("0.5N", "N", "2N")
 grid <- expand.grid(ef, pred, N) %>%
   rename("Event Fraction" = Var1, 
          "No. Predictors" = Var2, 
-         "Sample Size" = Var3) 
+         "Sample Size"    = Var3) 
 
 grid %>%
   select(-last_col()) %>%
@@ -164,25 +164,24 @@ In summary, for each data set, five imbalance corrections (four + one control) w
 
 ### 1.5 Performance Measures
 
-Out-of-sample model performance will be assessed using measures of discrimination, accuracy and calibration. 
+Out-of-sample model performance will be assessed using measures of discrimination, accuracy and calibration.\
+\
 
 **Discrimination**:\
 \
-Discrimination will be measured by area under the receiver operator curve ($\Delta$C-statistic). 
+Discrimination will be measured by area under the receiver operator curve ($\Delta$C-statistic). \
+\
 
 **Accuracy**:\
 \
-Four measures of accuracy will be reported:
-
-- Overall accuracy 
-- Matthew's correlation coefficient
-- Sensitivity 
-- Specificity 
-
-For all measures of accuracy, a decision threshold must be imposed. \
+Accuracy will be measured by Brier Score: \
 \
-~ what decision threshold? ~
+$$\mathrm{Brier \ Score} = \frac{1}{N} \sum_{i=1}^{N}(p_i - o_i)^2$$
 
+where, $N$ is the sample size, $p_i$ represents the predicted probability for the $i^{th}$ observation and $o_i$ represents the observed binary outcome ($0$ or $1$). Brier score is equivalent to the mean square error between the predicted probabilities and observed outcomes.\
+\
+Measures of accuracy which involve the selection of a decision threshold (e.g., total accuracy, sensitivity, specificity) will not be considered.\
+\
 
 **Calibration:**\
 \

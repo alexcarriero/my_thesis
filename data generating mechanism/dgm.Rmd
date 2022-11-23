@@ -4,23 +4,24 @@ author: "Alex Carriero"
 output: html_document
 ---
 ```{r}
+# Note:
+
 # add noise the number of people selected in each group so ev is not the same every time 
 
 # What we can vary: 
 
-# predictor means within groups     
-# predictor means between groups 
+# predictor means within groups        --- no
+# predictor means between groups       --- yes
 
-# predictor variance within groups 
-# predictor variance between groups 
+# predictor variance within groups     --- no 
+# predictor variance between groups    --- yes
 
 # predictor covariance within groups   ---  no
 # predictor covariance between groups  ---  no
 ```
 
-# proof of concept example
-```{r}
-# Distinct Distributions for Classes 
+# Functions, Libraries
+```{r, warning = F, message = F}
 library(tidyverse)
 library(MASS)
 library(pROC)
@@ -28,44 +29,59 @@ library(tableone)
 ```
 
 ```{r}
-scenario <- function(npred){
+scenario <- function(npred, dmu = 0.5, dsig = 0.1){
 
-x <- 0.3                      # mean difference between classes 
-y <- 0.3                      # varcov difference between classes 
+x <- dmu                      # mean difference between classes 
+y <- dsig                     # var  difference between classes 
+z <- 0.2                      # cov  among predictors 
+p <- 0.8                      # proportion of correlated predictors
 
+# number of predictors
 npred <-  npred 
-mu    <-  c(rep(0,npred))              # vector of means
-delta <-  c(rep(x,npred))              # vector of deltas (between class mean differences)
-sigma <-  diag(npred)                  # varcov matrix
-dsig  <-  diag(c(rep(y, npred)))       # matrix of deltas (between class varcov differences)
 
-return(list(npred, mu, delta, sigma, dsig))
+# set up correlations
+corr  <-  matrix(0, npred, npred)      # matrix: cov matrix, 0 on diagonals
+corr[1:npred*p, 1:npred*p] = z
+diag(corr) = 0
+
+# mean structures
+mu0    <-  c(rep(0,npred))             # vector: class 0 means
+dmu    <-  c(rep(x,npred))             # vector: difference in means between classes 
+mu1    <-  mu0 + dmu                   # vector: class 1 means 
+
+# covariance structures
+sigma0 <-  diag(npred)   + corr        # matrix: cov matrix of class 0 
+dsig   <-  diag(c(rep(y, npred)))      # matrix: difference in cov matrix between classes 
+sigma1 <-  sigma0 - dsig               # matrix: cov matrix of class 1
+
+return(list(npred, mu0, mu1, sigma0, sigma1))
 }
 ```
 
 ```{r}
-generate_data <- function(inn, ev = 0.2){
+scenario(npred = 10)
+```
+
+```{r}
+generate_data <- function(inn, ev = 0.2, n.level = 1){
   
-  npred = inn[[1]]
-  mu    = inn[[2]]
-  delta = inn[[3]]
-  sigma = inn[[4]]
-  dsig  = inn[[5]]
+  npred  = inn[[1]]
+  mu0    = inn[[2]]
+  mu1    = inn[[3]]
+  sigma0 = inn[[4]]
+  sigma1 = inn[[5]]
   
   # calculate sample size   
-  n = 1000 
+  n =  exp((-0.508 + 0.259*log(1-ev) + 0.504*log(npred) - log(0.050))/0.544)
+  n =  ceiling(n*n.level)
   
   # positive class
-  n1 <- ev*n
-  mu1 <- mu + delta
-  s1  <- sigma - dsig
-  class_1 <- mvrnorm(n1, mu1, s1)
+  n1      <- ceiling(ev*n)
+  class_1 <- mvrnorm(n1, mu1, sigma1)
 
   # negative class
-  n0  <- (1-ev)*n
-  mu0 <- mu
-  s0  <- sigma
-  class_0 <- mvrnorm(n0, mu0, s0)
+  n0      <- ceiling((1-ev)*n)
+  class_0 <- mvrnorm(n0, mu0, sigma0)
 
   outcome <- c(rep(1, n1), rep(0, n0))
 
@@ -78,6 +94,7 @@ generate_data <- function(inn, ev = 0.2){
 }
 ```
 
+
 ```{r, warning = F, message = F}
 # view summary statistics
 summ <- function(df){
@@ -87,6 +104,7 @@ summ <- function(df){
 ```
 
 ```{r, warning = F, message = F}
+# visualization
 visualize <- function(df){
   df <- df 
   df %>%
@@ -113,10 +131,10 @@ return(auc)
 }
 ```
 
-
+# One example
 ```{r}
 # generate data
-df <- generate_data(scenario(npred = 8), ev = 0.2)
+df <- generate_data(scenario(npred = 16), ev = 0.02)
 df
 ```
 
@@ -127,18 +145,50 @@ get_auc(df)
 visualize(df)
 ```
 
-# test scenarios 
+# Get Parameter Values
 
 ```{r, message = F}
 # simulation to determine mean and variance values: get appropriate auc 
-set.seed(311)
+set.seed(911)
 auc <- c()
 
 for (i in 1:2000){                                          
-  df      <- generate_data(scenario(npred = 8), ev = 0.2)
+  df      <- generate_data(scenario(npred = 16, dmu = 0.44, dsig = 0.2), ev = 0.02)
   auc[i]  <- get_auc(df)
 }
 
-mean(auc)   # 0.75
-sd(auc)     # 0.02
+mean(auc)   
+sd(auc)     
 ```
+
+```{r}
+delta_mu1  <- c()
+delta_sig1 <- c()
+delta_mu2  <- c(0.62, 0.62, 0.56, 0.50, 0.50, 0.44)
+delta_sig2 <- c(0.20, 0.20, 0.20, 0.20, 0.20, 0.20)
+auc2 <- c(0.851, 0.851, 0.850, 0.852, 0.852, 0.851)
+sd2  <- c(0.017, 0.019, 0.047, 0.013, 0.014, 0.034)
+```
+
+```{r}
+# store success values in a table
+ef <- c(0.5, 0.2, 0.02)
+p  <- c(8, 16, 28)
+n  <- c("0.5N", "N", "2N")
+
+delta_mu  <- c(rep(NA, 27))
+delta_sig <- c(rep(NA, 27))
+
+grid <- expand.grid(ef, p, n)
+grid <- 
+  as.data.frame(grid) %>% 
+  mutate(dmu  = delta_mu,
+         dsig = delta_sig, 
+         auc  = c(rep(NA, 27)),
+         sd   = c(rep(NA, 27))) %>% 
+    rename("ef"    = Var1, 
+           "npred" = Var2, 
+           "n"     = Var3) 
+grid
+```
+
