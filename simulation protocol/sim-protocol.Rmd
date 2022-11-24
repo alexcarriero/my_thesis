@@ -1,8 +1,8 @@
 ---
 title: "**Simulation Study Protocol \\vspace{0.25in}**"
-subtitle: "Simulation(s) to assess the impact of class imbalance corrections on the calibration of prediction models."
+subtitle: "Simulation(s) to assess the impact of class imbalance corrections on the calibration of clinical prediction models."
 author: "Alex Carriero"
-date: "November 17, 2022"
+date: "November 24, 2022"
 output: pdf_document
 geometry: margin = 36mm
 
@@ -21,15 +21,15 @@ library(kableExtra)
 
 ### 1.1  Aim
 
-We aim to determine the best practices for handling class imbalance when developing clinical prediction models developed for dichotomous risk prediction. Under a variety of realistic scenarios, four imbalance corrections and six classification algorithms will be used to train prediction models; models will then be systematically compared based on their out-of-sample predictive performance.\
+We aim to determine the best practices for handling class imbalance when developing clinical prediction models for dichotomous risk prediction. Under a variety of realistic scenarios, four imbalance corrections and six classification algorithms will be used to train prediction models; models will then be systematically compared based on their out-of-sample predictive performance.\
 \
-We aim to identify any combination of imbalance correction and classification algorithm that can outperform a control model (model developed using the given classification algorithm with no imbalance correction). In particular, we aim to determine which (if any) imbalance corrections lead to improved model performance without compromising model calibration. 
+We aim to identify any combination of imbalance correction and classification algorithm that, together, create a model which outperforms the associated control model (a model trained using the classification algorithm and no imbalance correction). In particular, we aim to determine if any imbalance corrections lead to improved model performance without compromising model calibration. 
 
 ### 1.2  Data-Generating Mechanisms
 
 ### 1.2.1 Scenarios
 
-Imbalanced data will be simulated to reflect 27 (3 x 3 x 3) unique scenarios.  This is achieved by varying the following three properties of the data: number of predictors, event fraction and sample size.  The number of predictors will vary through the set {8,16,32} and event fraction, through the set {0.5, 0.2, 0.02}. The minimum sample size for the prediction model (N) will be computed according to formulae presented in @riley.  Sample size will then vary through the set {$\frac{1}{2}$N, N and 2N}.
+Imbalanced data will be simulated to reflect 27 (3 x 3 x 3) unique scenarios.  This is achieved by varying the following three characteristics of the data: number of predictors, event fraction and sample size.  The number of predictors will vary through the set {8,16,32} and event fraction through the set {0.5, 0.2, 0.02}. The minimum sample size for the prediction model (N) will be computed according to formulae presented in @riley.  Sample size will then vary through the set {$\frac{1}{2}$N, N and 2N}.
 
 ```{r, echo = F, message = F, warning = F}
 factor <- c("No. of predictors", 
@@ -58,30 +58,69 @@ Data for each class is generated independently from two distinct multivariate no
 \
 \ \ \ \ \ \ Class 0: $\mathbf{X} \sim mvn( \pmb{\mu_0}, \pmb{\Sigma_0})$ = $mvn(\pmb{0}, \pmb{\Sigma_0})$\
 \
-\ \ \ \ \ \ Class 1: $\mathbf{X} \sim mvn( \pmb{\mu_1}, \pmb{\Sigma_1})$ = $mvn(\pmb{\Delta_\mu}, \pmb{\Sigma_0} +\pmb{\Delta_\Sigma})$\
+\ \ \ \ \ \ Class 1: $\mathbf{X} \sim mvn( \pmb{\mu_1}, \pmb{\Sigma_1})$ = $mvn(\pmb{\Delta_\mu}, \pmb{\Sigma_0} -\pmb{\Delta_\Sigma})$\
 
-The parameters (mean vector and covariance matrix) of the data generating distributions are distinct between the classes. In the formulae above, $\pmb{\Delta_\mu}$ refers to the vector housing the difference in predictor means between the two classes.  Similarly, $\pmb{\Delta_\Sigma}$ refers to the matrix housing the difference in predictors variances/covariances between the two classes. $\pmb{\Delta_\Sigma}$ is a diagonal matrix; all predictor covariances will be equal between the classes.  
+The parameters (mean vector and covariance matrix) of the data generating distributions are distinct between the classes. In the formulae above, $\pmb{\Delta_\mu}$ refers to the vector housing the difference in predictor means between the two classes.  Similarly, $\pmb{\Delta_\Sigma}$ refers to the matrix housing the difference in predictors variances/covariances between the two classes. $\pmb{\Delta_\Sigma}$ is a diagonal matrix; all predictor covariances will be equal between the classes.\
+\
+In class 0, all means are fixed to zero and all variances are fixed to 1. In class 1, all means are stored in the vector $\pmb{\Delta_\mu}$, there is no variation in means among predictors within a class, thus, every element in the vector $\pmb{\Delta_\mu}$ is equivalent. Similarly, there is no variation in predictor variances within a class, so every diagonal element in $\pmb{\Delta_\Sigma}$ is equivalent. Finally, $80$% of the predictors are allowed to covary.  The covariance among predictors is set to $0.2$.\
+\
+\
+For example, in scenario where we have 8 predictors:\
 
-The parameter values for the data generating distributions in each class are selected to generated a $\Delta C$ Statistic $=$ **INSERT**.  For each scenario, the parameters of the data generating distribution are included in the Table 2. Mean and standard deviation estimates of AUC are calculated based on a small simulation,  in which 2000 data sets are generated. This is done to detail the expected mean and variation of AUC of data generated for each scenario in the full simulation study. 
+Mean and covariance structure for class 0: 
+\begin{equation*}
+\pmb{\mu_0} = \begin{bmatrix}
+ \\ 0 \\ 0 \\ 0\\ 0 \\ 0 \\ 0 \\ 0 \\ 0
+\end{bmatrix}, \pmb{\Sigma_0} = \begin{bmatrix}
+1   & 0.2 & 0.2 & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 1   & 0.2 & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 1   & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 1 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 0.2 & 1 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 0.2 & 0.2 & 1 & 0 & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 1 & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 0 & 1\\
+\end{bmatrix}
+\end{equation*}
 
-```{r, echo =F}
-ef   <- c(0.5, 0.2, 0.02)
-pred <- c(8, 16, 32)
-N    <- c("0.5N", "N", "2N")
 
-grid <- expand.grid(ef, pred, N) %>%
-  rename("Event Fraction" = Var1, 
-         "No. Predictors" = Var2, 
-         "Sample Size"    = Var3) 
+Mean and covariance structure for class 1: 
+\begin{equation*}
+\pmb{\mu_1} = \begin{bmatrix}
+ \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu
+\end{bmatrix}, \pmb{\Sigma_1} = \begin{bmatrix}
+1 - \delta_\Sigma   & 0.2 & 0.2 & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 1 - \delta_\Sigma   & 0.2 & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 1 - \delta_\Sigma   & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 1 - \delta_\Sigma & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 0.2 & 1 - \delta_\Sigma & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 0.2 & 0.2 & 1 - \delta_\Sigma & 0 & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 1 - \delta_\Sigma & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 0 & 1 - \delta_\Sigma\\
+\end{bmatrix}
+\end{equation*}
+\
+\
+The parameter values for the data generating distributions ($\delta_\mu$ and $\delta_\Sigma$) in each class are selected to generated a $\Delta C$ Statistic $=0.85$.  For each scenario, the parameters of the data generating distribution are included in the Table 2. To estimate the expected mean and standard deviation of the AUC over several generated data sets small simulation was conducted. For each scenario $2000$ data sets were generated and the mean and standard deviation of the AUC for the generated data sets is presented in Table 2. 
 
-grid %>%
-  select(-last_col()) %>%
-  mutate("Delta Mean"  = c(rep(0, 27)), 
-         "Delta Var" = c(rep(0, 27)),
-         AUC   = c(rep(0, 27)), 
-         SD    = c(rep(0, 27))) %>%
-  kbl(booktabs = T, caption = "Summary of parameters used in data generating mechanism for all simulation scenarios") %>%
-  kable_styling(full_width = T, latex_options ="hold_position") %>% 
+```{r, echo = F, warning = F, message = F}
+a <- read.csv("settings.csv")
+
+a %>% 
+  as.data.frame() %>% 
+  dplyr::select(-X, -n)%>%
+  mutate(ef   = as.numeric(ef), 
+         dmu  = as.numeric(dmu), 
+         dsig = as.numeric(dsig), 
+         auc  = as.numeric(auc), 
+         sd   = as.numeric(sd))%>%
+  rename("Event Fraction" = ef, 
+         "No. Predictors" = npred, 
+         "Delta Mu"       = dmu, 
+         "Delta Sigma"    = dsig) %>%
+  kbl(booktabs = T, digits = 2, 
+      caption = "Summary of parameters used in data generating mechanism for all simulation scenarios")%>%
+  kable_styling(full_width = T, latex_options ="hold_position") %>%
   pack_rows("0.5N", 1,9) %>% 
   pack_rows("N", 10, 18) %>% 
   pack_rows("2N",19, 27)
@@ -90,6 +129,9 @@ grid %>%
 ### 1.3 Estimands
 
 The focus of this study is the out-of-sample predictive performance of clinical prediction models for dichotomous risk prediction.
+
+
+\newpage
 
 ### 1.4  Methods
 
@@ -158,7 +200,7 @@ x %>%
   footnote(symbol =  "IRIC package not available on CRAN")
 ```
 \
-In summary, for each data set, five imbalance corrections (four + one control) will be applied to the training set.  Subsequently, six prediction models will be developed for each of the imbalance corrected training sets.  In other words, each data set will result in: 5 corrected training sets x 6 classification algorithms = 30 prediction models.  All models will be trained using training data sets.  Out-of-sample performance will be then be assessed using the test data. 
+In summary, for each data set, five imbalance corrections (four and one control) will be applied to the training set.  Subsequently, six prediction models will be developed for each of the imbalance corrected training sets.  In other words, each data set will result in: 5 corrected training sets x 6 classification algorithms = 30 prediction models.  All models will be trained using training data sets.  Out-of-sample performance will be then be assessed using the test data. 
 
 \newpage
 
@@ -178,7 +220,7 @@ Accuracy will be measured by Brier Score: \
 \
 $$\mathrm{Brier \ Score} = \frac{1}{N} \sum_{i=1}^{N}(p_i - o_i)^2$$
 
-where, $N$ is the sample size, $p_i$ represents the predicted probability for the $i^{th}$ observation and $o_i$ represents the observed binary outcome ($0$ or $1$). Brier score is equivalent to the mean square error between the predicted probabilities and observed outcomes.\
+where, $N$ is the sample size, $p_i$ represents the predicted probability for the $i^{th}$ observation and $o_i$ represents the observed binary outcome ($0$ or $1$) for the $i^{th}$ observation. Brier score is equivalent to the mean square error between the predicted probabilities and observed outcomes.\
 \
 Measures of accuracy which involve the selection of a decision threshold (e.g., total accuracy, sensitivity, specificity) will not be considered.\
 \
@@ -187,9 +229,9 @@ Measures of accuracy which involve the selection of a decision threshold (e.g., 
 \
 Calibration will be measured in terms of calibration intercept and slope.  Model calibration will be visualized using flexible model calibration curves.\
 
-\newpage
+## Error Handling 
 
-## 2  Error Handling 
+Under the following scenario errors arise: 8 predictors, event fraction = 0.02, sample size = 0.5N.  Occasionally ($\approx 5 / 2000$) there are not enough observations for the outcome generated, causing glm to fail.  
 
 
 \newpage 

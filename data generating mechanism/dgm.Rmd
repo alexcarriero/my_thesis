@@ -59,7 +59,7 @@ return(list(npred, mu0, mu1, sigma0, sigma1))
 ```
 
 ```{r}
-scenario(npred = 10)
+scenario(npred = 8)
 ```
 
 ```{r}
@@ -134,10 +134,9 @@ return(auc)
 # One example
 ```{r}
 # generate data
-df <- generate_data(scenario(npred = 16), ev = 0.02)
+df <- generate_data(scenario(npred = 16), ev = 0.02, n.level = 0.5)
 df
 ```
-
 ```{r}
 # all together
 summ(df) 
@@ -153,7 +152,7 @@ set.seed(911)
 auc <- c()
 
 for (i in 1:2000){                                          
-  df      <- generate_data(scenario(npred = 16, dmu = 0.44, dsig = 0.2), ev = 0.02)
+  df      <- generate_data(scenario(npred = 28, dmu = 0.29, dsig = 0.2), ev = 0.02, n.level = 0.5)
   auc[i]  <- get_auc(df)
 }
 
@@ -162,12 +161,10 @@ sd(auc)
 ```
 
 ```{r}
-delta_mu1  <- c()
-delta_sig1 <- c()
-delta_mu2  <- c(0.62, 0.62, 0.56, 0.50, 0.50, 0.44)
-delta_sig2 <- c(0.20, 0.20, 0.20, 0.20, 0.20, 0.20)
-auc2 <- c(0.851, 0.851, 0.850, 0.852, 0.852, 0.851)
-sd2  <- c(0.017, 0.019, 0.047, 0.013, 0.014, 0.034)
+delta_mu_vec  <- c(0.61, 0.61, "X", 0.48, 0.48, 0.35, 0.42, 0.42, 0.29, 0.62, 0.62, 0.56, 0.50, 0.50, 0.44, 0.43, 0.43, 0.38, 0.62, 0.62, 0.58, 0.50, 0.50, 0.47, 0.44, 0.44, 0.40)
+delta_sig_vec <- c(0.20, 0.20, "X", 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20)
+auc_vec       <- c(0.85, 0.85, "X", 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85)
+sd_vec        <- c(0.02, 0.03, "X", 0.02, 0.02, 0.05, 0.02, 0.01, 0.03, 0.02, 0.02, 0.05, 0.01, 0.01, 0.03, 0.01, 0.01, 0.03, 0.01, 0.01, 0.04, 0.01, 0.01, 0.03, 0.01, 0.01, 0.02)
 ```
 
 ```{r}
@@ -182,13 +179,13 @@ delta_sig <- c(rep(NA, 27))
 grid <- expand.grid(ef, p, n)
 grid <- 
   as.data.frame(grid) %>% 
-  mutate(dmu  = delta_mu,
-         dsig = delta_sig, 
-         auc  = c(rep(NA, 27)),
-         sd   = c(rep(NA, 27))) %>% 
+  mutate(dmu  = delta_mu_vec,
+         dsig = delta_sig_vec, 
+         auc  = auc_vec,
+         sd   = sd_vec) %>% 
     rename("ef"    = Var1, 
            "npred" = Var2, 
            "n"     = Var3) 
-grid
-```
 
+write.csv(grid, "settings.csv")
+```
