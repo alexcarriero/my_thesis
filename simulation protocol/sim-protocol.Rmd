@@ -65,7 +65,7 @@ The parameters (mean vector and covariance matrix) of the data generating distri
 \
 In class 0, all predictor means are fixed to zero and all variances are fixed to 1. In class 1, all means are stored in the vector $\pmb{\Delta_\mu}$, there is no variation in means among predictors within a class, thus, every element in the vector $\pmb{\Delta_\mu}$ is equivalent; denoted by $\delta_\mu$. Similarly, there is no variation in predictor variances within a class, so every diagonal element in $\pmb{\Delta_\Sigma}$ is equivalent; diagonal elements are denoted by $\delta_\Sigma$.\
 \
-Finally, $80$% of the predictors are allowed to covary.  All correlations among predictors in each class are set to $0.2$.  Correlation matrices between the classes are therefore, equivalent; off-diagonal elements of $\pmb{\Delta_\Sigma}$ are computed such that the correlation matrices between the two classes are equivalent.\
+Finally, $80$% of the predictors are allowed to covary.  All correlations among predictors in each class are set to $0.2$.  Correlation matrices between the classes are therefore, equivalent; off-diagonal elements of $\pmb{\Delta_\Sigma}$ are computed such that the correlation matrices between the two classes are equivalent. Note, the covariance matrices are *not* equivalent between the classes.\
 \
 \
 For example, in scenario where we have 8 predictors:\
@@ -252,14 +252,14 @@ It is possible that some models do not converge, especially in the rare event th
 ## Appendix A 
 
 
-Under the assumption of normality all predictors (in each class), AUC can be calculated directly, using equation (1) [@mvauc].  This equation is suitable when the covariance matrices of each class are *not* equivalent. For $p$ predictors, $\delta_\mu$ is a $1$ x $p$ vector housing the difference in predictor means between class 0 and class 1. $\Sigma_0$ and $\Sigma_1$ represent the covariance matrices of class 0 and 1 respectively and $\Phi$ represents the cumulative density function (cdf) of the standard normal distribution.\
+Under the assumption of normality for all predictors (in each class), AUC can be calculated directly, using equation (1) [@mvauc].  This equation is suitable when the covariance matrices of each class are *not* equivalent. For $p$ predictors, $\pmb{\Delta_\mu}$ is a $1$ x $p$ vector housing the difference in predictor means between class 0 and class 1. $\pmb{\Sigma_0}$ and $\pmb{\Sigma_1}$ represent the covariance matrices of class 0 and 1 respectively and $\Phi$ represents the cumulative density function (cdf) of the standard normal distribution.\
 
 \begin{equation}
 AUC = \Phi \left( \sqrt{\pmb{\Delta_\mu}{'}\  (\pmb{\Sigma_0} + \pmb{\Sigma_1})^{-1} \ \pmb{\Delta_{\mu}}} \right)
 \end{equation}
 \
 \
-In our project, the differences in predictors means between the classes are equivalent. In other words, the elements of $\pmb{\Delta_\mu}$ are equivalent; denoted by $\delta_\mu$.  To determine the value of $\delta_\mu$ which yields the desired value of $AUC$, we solve equation (1) for $\delta_\mu$.  \
+In our project, the differences in predictor means between the classes are equivalent. In other words, the elements of $\pmb{\Delta_\mu}$ are equivalent; denoted by $\delta_\mu$.  The differences in predictor variances between the classes are also equivalent.  The diagonal elements of $\pmb{\Sigma_1}$ are all equal to ($1- \delta_\Sigma$) as shown in section 1.2.2.  To ensure this equation has a unique solution, $\delta_\Sigma$ is fixed to $0.3$.  Then, we may solve equation (1) to determine the value of $\delta_\mu$ which yields the desired $AUC$. \
 \
 Let $\pmb{A} = (\pmb{\Sigma_0} + \pmb{\Sigma_1})^{-1}$,
 
@@ -287,7 +287,7 @@ Based on a desired $AUC$ of $0.85$,
 \end{equation}\
 \
 
-Equation (2) will be used to derive the appropriate $\delta_\mu$ for each simulation scenario.
+Equation (2) will be used to derive the appropriate $\delta_\mu$ for each simulation scenario. Meanwhile, $\delta_\Sigma$ will remain fixed at 0.3 for each scenario.
 
 \newpage
 
