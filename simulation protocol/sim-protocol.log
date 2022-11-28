@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.11.13)  24 NOV 2022 13:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.11.13)  28 NOV 2022 14:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -727,15 +727,15 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(102.42992pt, 409.43517pt, 102.42992pt)
-* v-part:(T,H,B)=(102.42992pt, 590.11015pt, 102.42992pt)
+* h-part:(L,W,R)=(99.58464pt, 415.12572pt, 99.58464pt)
+* v-part:(T,H,B)=(99.58464pt, 595.8007pt, 99.58464pt)
 * \paperwidth=614.295pt
 * \paperheight=794.96999pt
-* \textwidth=409.43517pt
-* \textheight=590.11015pt
-* \oddsidemargin=30.15993pt
-* \evensidemargin=30.15993pt
-* \topmargin=-6.84007pt
+* \textwidth=415.12572pt
+* \textheight=595.8007pt
+* \oddsidemargin=27.31465pt
+* \evensidemargin=27.31465pt
+* \topmargin=-9.68535pt
 * \headheight=12.0pt
 * \headsep=25.0pt
 * \topskip=10.0pt
@@ -802,18 +802,18 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/Users/alexcarriero/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 155.
+(Font)              <10> on input line 157.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 155.
+(Font)              <7> on input line 157.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 155.
+(Font)              <5> on input line 157.
 
-Underfull \hbox (badness 10000) in paragraph at lines 181--191
+Underfull \hbox (badness 10000) in paragraph at lines 185--196
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 192--212
+Underfull \hbox (badness 10000) in paragraph at lines 197--221
 
  []
 
@@ -822,48 +822,58 @@ Underfull \hbox (badness 10000) in paragraph at lines 192--212
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [3] [4] [5]
-Underfull \hbox (badness 10000) in paragraph at lines 367--370
+Underfull \hbox (badness 10000) in paragraph at lines 398--400
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 371--376
+Underfull \hbox (badness 10000) in paragraph at lines 405--408
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 377--381
+Underfull \hbox (badness 10000) in paragraph at lines 413--416
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 383--393
+Underfull \hbox (badness 10000) in paragraph at lines 418--427
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 394--399
+Underfull \hbox (badness 10000) in paragraph at lines 432--437
 
  []
 
-[6] [7] (./sim-protocol.aux)
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 451--460
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 493--495
+
+ []
+
+[7] [8] (./sim-protocol.aux)
 Package logreq Info: Writing requests to 'sim-protocol.run.xml'.
 \openout1 = `sim-protocol.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 19904 strings out of 476931
- 345704 string characters out of 5824091
- 1140629 words of memory out of 5000000
- 40822 multiletter control sequences out of 15000+600000
+ 19876 strings out of 476931
+ 345444 string characters out of 5824091
+ 1131977 words of memory out of 5000000
+ 40780 multiletter control sequences out of 15000+600000
  527727 words of font info for 71 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  74i,17n,81p,685b,801s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}</Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb>
-Output written on sim-protocol.pdf (7 pages, 182682 bytes).
+{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}</Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb>
+Output written on sim-protocol.pdf (8 pages, 204578 bytes).
 PDF statistics:
- 167 PDF objects out of 1000 (max. 8388607)
- 133 compressed objects within 2 object streams
- 34 named destinations out of 1000 (max. 500000)
- 81 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 195 PDF objects out of 1000 (max. 8388607)
+ 156 compressed objects within 2 object streams
+ 48 named destinations out of 1000 (max. 500000)
+ 73 words of extra memory for PDF output out of 10000 (max. 10000000)
 

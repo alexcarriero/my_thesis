@@ -3,84 +3,93 @@ title: "Data Generating Mechanism"
 author: "Alex Carriero"
 output: html_document
 ---
-```{r}
-# Note:
-
-# add noise the number of people selected in each group so ev is not the same every time 
-
-# What we can vary: 
-
-# predictor means within groups        --- no
-# predictor means between groups       --- yes
-
-# predictor variance within groups     --- no 
-# predictor variance between groups    --- yes
-
-# predictor covariance within groups   ---  no
-# predictor covariance between groups  ---  no
-```
 
 # Functions, Libraries
 ```{r, warning = F, message = F}
 library(tidyverse)
 library(MASS)
-library(pROC)
+library(matlib)
 library(tableone)
+library(pmsampsize)
+library(pROC)
 ```
 
 ```{r}
-scenario <- function(npred, dmu = 0.5, dsig = 0.1){
+sample_size <- function(npred, ev, n.level){
+  # this function calculates minimum sample size for a prediction model 
+  # based on npred and event fraction using the pmpsampsize() function. 
+  
+  # n.level represents the value the minimum sample size should be multiplied by
+  # to achieve the desired sample size scenario. 
+  
+  a = pmsampsize(type = "b", prevalence = ev, cstatistic = 0.85, parameters=npred)$sample_size
+  n = ceiling(a*n.level)
 
-x <- dmu                      # mean difference between classes 
-y <- dsig                     # var  difference between classes 
-z <- 0.2                      # cov  among predictors 
-p <- 0.8                      # proportion of correlated predictors
-
-# number of predictors
-npred <-  npred 
-
-# set up correlations
-corr  <-  matrix(0, npred, npred)      # matrix: cov matrix, 0 on diagonals
-corr[1:npred*p, 1:npred*p] = z
-diag(corr) = 0
-
-# mean structures
-mu0    <-  c(rep(0,npred))             # vector: class 0 means
-dmu    <-  c(rep(x,npred))             # vector: difference in means between classes 
-mu1    <-  mu0 + dmu                   # vector: class 1 means 
-
-# covariance structures
-sigma0 <-  diag(npred)   + corr        # matrix: cov matrix of class 0 
-dsig   <-  diag(c(rep(y, npred)))      # matrix: difference in cov matrix between classes 
-sigma1 <-  sigma0 - dsig               # matrix: cov matrix of class 1
-
-return(list(npred, mu0, mu1, sigma0, sigma1))
+  set.seed(NULL)
+  return(n)
 }
 ```
 
 ```{r}
-scenario(npred = 8)
+scenario <- function(npred, ev = 0.5 , n.level = 1, dmu = 0.5){
+  # this function takes each factor to be varied in simulation as input
+  # and generates the mean and covariance matrices for each class.
+  
+  # it returns all information required for the data generating function: 
+  # number of predictors, event fraction, n.level, sample size, 
+  # and the mean and covariance matrices of each class. 
+
+  # set up
+  x      <- dmu                              # delta mu
+  y      <- 0.3                              # delta sigma 
+  z      <- 0.2                              # z 
+  p      <- 0.8                              # proportion of correlated predictors
+  npred  <- npred                            # number of predictors
+  n      <- sample_size(npred, ev, n.level)  # sample size calculation
+
+  # set up correlations
+  corr0  <-  matrix(0, npred, npred)         # matrix: set up for cov matrix, 0 on diagonals
+  corr0[1:npred*p, 1:npred*p] = z            # class 0 
+  diag(corr0) = 0
+
+  corr1  <-  matrix(0, npred, npred)         # matrix: set up for cov matrix, 0 on diagonals
+  corr1[1:npred*p, 1:npred*p] = (1-y)*z      # class 1
+  diag(corr1) = 0
+
+  # mean structures
+  mu0    <-  c(rep(0,npred))                 # vector: class 0 means
+  dmu    <-  c(rep(x,npred))                 # vector: difference in means between classes 
+  mu1    <-  mu0 + dmu                       # vector: class 1 means 
+
+  # covariance structures
+  sigma0 <-  diag(npred)  + corr0            # matrix: cov matrix of class 0 
+  dsig   <-  diag(c(rep(y, npred)))          # matrix: difference in variances between classes 
+  sigma1 <-  diag(npred) - dsig + corr1      # matrix: cov matrix of class 1
+
+  return(list(npred, ev, n.level, n, mu0, mu1, sigma0, sigma1))
+}
 ```
 
 ```{r}
-generate_data <- function(inn, ev = 0.2, n.level = 1){
+generate_data <- function(inn){
+  # this function generates one data set with the specifications 
+  # given by the input scenario.
   
-  npred  = inn[[1]]
-  mu0    = inn[[2]]
-  mu1    = inn[[3]]
-  sigma0 = inn[[4]]
-  sigma1 = inn[[5]]
-  
-  # calculate sample size   
-  n =  exp((-0.508 + 0.259*log(1-ev) + 0.504*log(npred) - log(0.050))/0.544)
-  n =  ceiling(n*n.level)
+  npred   = inn[[1]]
+  ev      = inn[[2]]
+  n.level = inn[[3]]
+  n       = inn[[4]]
+  mu0     = inn[[5]]
+  mu1     = inn[[6]]
+  sigma0  = inn[[7]]
+  sigma1  = inn[[8]]
   
   # positive class
-  n1      <- ceiling(ev*n)
+  n1      <- rbinom(1, n, ev)
   class_1 <- mvrnorm(n1, mu1, sigma1)
 
   # negative class
-  n0      <- ceiling((1-ev)*n)
+  n0      <- n - n1
   class_0 <- mvrnorm(n0, mu0, sigma0)
 
   outcome <- c(rep(1, n1), rep(0, n0))
@@ -93,7 +102,6 @@ generate_data <- function(inn, ev = 0.2, n.level = 1){
   return(df)
 }
 ```
-
 
 ```{r, warning = F, message = F}
 # view summary statistics
@@ -120,7 +128,7 @@ visualize <- function(df){
 ```
 
 ```{r}
-# discrimination 
+# discrimination (auc using logistic regression)
 get_auc <- function(df){
   
 mod  <- glm(outcome~., family = "binomial", data = df)
@@ -134,58 +142,127 @@ return(auc)
 # One example
 ```{r}
 # generate data
-df <- generate_data(scenario(npred = 16), ev = 0.02, n.level = 0.5)
+df  <- generate_data(scenario(npred = 10, ev = 0.2, n.level = 1, 0.604))
 df
 ```
+
 ```{r}
-# all together
+# view data 
 summ(df) 
 get_auc(df)
 visualize(df)
 ```
 
-# Get Parameter Values
+# Get Parameter Values 
+```{r}
+get_delta_mu <- function(npred, auc = 0.85){
+  # based equation 2 in Appendix A of simulation protocol
+  
+  inn = scenario(npred)      # get covariance matrices
+  s0  = inn[[7]]              
+  s1  = inn[[8]]                       
+  
+  A   = inv(s0 + s1)         # calculate matrix A
+  Y   = sum(colSums(A))                  
+  
+  dmu = qnorm(auc) / sqrt(Y)
+  return(dmu)
+}
+```
 
-```{r, message = F}
-# simulation to determine mean and variance values: get appropriate auc 
-set.seed(911)
-auc <- c()
+```{r}
+get_delta_mu(npred = 8)   # 0.6043
+get_delta_mu(npred = 16)  # 0.4854
+get_delta_mu(npred = 28)  # 0.4225
+```
 
-for (i in 1:2000){                                          
-  df      <- generate_data(scenario(npred = 28, dmu = 0.29, dsig = 0.2), ev = 0.02, n.level = 0.5)
-  auc[i]  <- get_auc(df)
+# Store function input for each simulation scenario
+```{r}
+# store scenario settings in a data frame
+ef  <- c(0.5, 0.2, 0.02)
+p   <- c(8, 16, 28)
+n   <- c(0.5, 1, 2)
+
+grid <- expand.grid(ef, n, p)
+grid <- 
+  grid %>% 
+  mutate(dmu = c(rep(0.6043, 9), rep(0.4854, 9), rep(0.4225, 9))) %>% 
+  rename("ef"      = Var1, 
+         "n"       = Var2, 
+         "npred"   = Var3)%>% 
+  dplyr::select(npred, ef, n, dmu)
+
+# ... and in a matrix 
+gridmat <- data.matrix(grid)
+```
+
+```{r}
+# view scenario settings
+grid
+```
+
+```{r}
+# save settings in csv
+#write.csv(grid,"sim_settings.csv")
+```
+
+```{r}
+# store output of scenario() function for each setting in a list
+set <- list()  
+
+for(i in 1:nrow(gridmat)){
+  colnames(gridmat)<-NULL
+  set[[i]] <- scenario(npred   = gridmat[i,1], 
+                       ev      = gridmat[i,2], 
+                       n.level = gridmat[i,3], 
+                       dmu     = gridmat[i,4])
 }
 
-mean(auc)   
-sd(auc)     
+# set[[1]]
+```
+
+
+# Use stored information in small simulation
+```{r, message = F}
+# simulation to see mean and sd in auc for each scenario -- using logistic regression
+set.seed(1111)
+
+mean_auc <- c()
+sd_auc   <- c()
+  
+for(j in 1:length(set)){
+  scenario   <- set[[j]]
+  auc        <- c()
+
+  for (i in 1:2000){    
+    df      <- generate_data(scenario)
+    auc[i]  <- get_auc(df)
+  }
+
+mean_auc[j] <- mean(auc)   
+sd_auc[j]   <- sd(auc)
+}
 ```
 
 ```{r}
-delta_mu_vec  <- c(0.61, 0.61, "X", 0.48, 0.48, 0.35, 0.42, 0.42, 0.29, 0.62, 0.62, 0.56, 0.50, 0.50, 0.44, 0.43, 0.43, 0.38, 0.62, 0.62, 0.58, 0.50, 0.50, 0.47, 0.44, 0.44, 0.40)
-delta_sig_vec <- c(0.20, 0.20, "X", 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20)
-auc_vec       <- c(0.85, 0.85, "X", 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85, 0.85)
-sd_vec        <- c(0.02, 0.03, "X", 0.02, 0.02, 0.05, 0.02, 0.01, 0.03, 0.02, 0.02, 0.05, 0.01, 0.01, 0.03, 0.01, 0.01, 0.03, 0.01, 0.01, 0.04, 0.01, 0.01, 0.03, 0.01, 0.01, 0.02)
+# view results by descending mean auc
+cbind(grid, mean_auc, sd_auc) %>%     # 0.5N scenarios have highest mean auc 
+  arrange(desc(mean_auc))
 ```
-
 ```{r}
-# store success values in a table
-ef <- c(0.5, 0.2, 0.02)
-p  <- c(8, 16, 28)
-n  <- c("0.5N", "N", "2N")
-
-delta_mu  <- c(rep(NA, 27))
-delta_sig <- c(rep(NA, 27))
-
-grid <- expand.grid(ef, p, n)
-grid <- 
-  as.data.frame(grid) %>% 
-  mutate(dmu  = delta_mu_vec,
-         dsig = delta_sig_vec, 
-         auc  = auc_vec,
-         sd   = sd_vec) %>% 
-    rename("ef"    = Var1, 
-           "npred" = Var2, 
-           "n"     = Var3) 
-
-write.csv(grid, "settings.csv")
+# view results by descending sd auc
+cbind(grid, mean_auc, sd_auc) %>%    # smaller event fractions tend to have higher sd auc
+  arrange(desc(sd_auc))
 ```
+```{r}
+# check that correlation matrix is the same for class 1 and class 0 
+a<- set[[2]][[7]] # class 0
+b<- set[[2]][[8]] # class 1 
+
+a
+b
+cov2cor(a)
+cov2cor(b)
+# yes 
+```
+
