@@ -11,6 +11,7 @@ output: html_document
 # general
 library(tidyverse)
 library(devtools)
+library(MASS)
 
 # pre-processing corrections
 library(ROSE)
@@ -46,27 +47,57 @@ source("functions.R")
 
 # Simulation 
 ```{r}
-scenario <- set[[7]]
+simulation <- function(sc, iter){
+  
+  scenario <- set[[sc]]
 
-for (i in 1:2000){    
-    df      <- generate_data(scenario)
-    test    <- generate_data_test(scenario)
+  iter  <- iter
+  auc   <- matrix(data = 0, nrow = iter, ncol = 5)
+  bri   <- matrix(data = 0, nrow = iter, ncol = 5)
+
+  plot <- ggplot() + 
+          geom_abline(slope = 1, intercept = 0, size = 1) +
+          scale_color_brewer(palette = "Set2") +
+          xlab("Estimated Probability") +
+          ylab("Observed Proportion") +
+          ggtitle("Flexible Calibration Curves") + 
+          theme_minimal() 
+
+  for (i in 1:iter){    
+      df       <- generate_data(scenario)
+      test     <- generate_data_test(scenario)
     
-    pred_probs <- tibble(
-      class = test$outcome, 
-      lrg   = lrg(df, test), 
-      svm   = svc(df, test), 
-      rnf   = rnf(df, test), 
-      xgb   = xgb(df, test), 
-      rub   = rub(df, test),
-    )
+      pp       <- pred_probs(df, test)
     
+      ppl      <- pp %>%
+                  gather(key = "variable", value = "value", -class)
     
+      auc[i,]  <- quiet(get_auc(pp))
+      bri[i,]  <- get_brier_score(pp)
     
+      plot     <- plot + 
+                  geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = variable), 
+                              method = stats::loess, 
+                              formula = y ~ x,
+                              se = F, 
+                              size = 0.2) +
+                  facet_wrap(~variable)
+  }
+
+  out <- get_stats(auc, bri)
+  return(list(plot, out))
 }
 ```
 
+
 ```{r}
+results <- simulation(9, 50)
+
+results
+```
+# one iteration
+```{r}
+scenario <- set[[9]]
 scenario
 ```
 
@@ -74,29 +105,26 @@ scenario
 df   <- generate_data(scenario)
 test <- generate_data_test(scenario)
 
-pred_probs <- tibble(
-  class = test$outcome, 
-  lrg   = lrg(df, test), 
-  svm   = svc(df, test), 
-  rnf   = rnf(df, test), 
-  xgb   = xgb(df, test), 
-  rub   = rub(df, test),
-)
+pp   <- pred_probs(df, test)
 
-pred_probs
+ppl  <- pp %>%
+        gather(key = "variable", value = "value", -class)
 ```
 
 ```{r}
-pred_probs %>%
-  gather(key = "variable", value = "value", -class) %>%
-  ggplot(aes(x = value, y = as.numeric(class) -1, color = variable)) + 
-  geom_abline(slope = 1, intercept = 0, size = 1) +
-  geom_smooth(method = stats::loess, se = F) +
-  scale_color_brewer(palette = "Set2") +
-  xlab("Estimated Probability") +
-  ylab("Observed Proportion") +
-  ggtitle("Flexible Calibration Curves") + 
-  theme_minimal()
+plot <- ggplot() + 
+        geom_abline(slope = 1, intercept = 0, size = 1) +
+        scale_color_brewer(palette = "Set2") +
+        xlab("Estimated Probability") +
+        ylab("Observed Proportion") +
+        ggtitle("Flexible Calibration Curves") + 
+        theme_minimal() 
+
+plot + geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = variable), 
+                   method = stats::loess, 
+                   se = F, 
+                   size = 0.3)+
+        facet_wrap(~variable)
 ```
 
 ```{r}

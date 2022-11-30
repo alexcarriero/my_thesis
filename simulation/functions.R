@@ -116,6 +116,22 @@ rub <- function(df, test){
   pred <- predict(mod, newdata = test)
 }
 
+
+
+pred_probs <- function(df, test){
+  
+  a <- tibble(
+    class = test$outcome, 
+    lrg   = lrg(df, test), 
+    svm   = svc(df, test), 
+    rnf   = rnf(df, test), 
+    xgb   = xgb(df, test), 
+    rub   = rub(df, test)
+  )
+  return(a)
+}
+
+
 # performance metrics ----------------------------------------------------------
 
 brier_score <- function(probs, outcome){
@@ -135,5 +151,18 @@ get_auc <- function(tibble){
   return(vec)
 }
 
+get_stats <- function(auc, brier){
+  
+  out <- 
+    rbind(
+      auc_mean   = apply(auc, 2, mean),
+      auc_sd     = apply(auc, 2, sd),
+      brier_mean = apply(brier, 2, mean),
+      brier_sd   = apply(brier, 2, sd)
+    )
+  
+  colnames(out) <- c("lrg", "svc", "rnf", "xgb", "rub")
+  return(out)
+}
 
 
