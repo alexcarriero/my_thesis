@@ -91,13 +91,13 @@ simulation <- function(sc, iter){
 
 
 ```{r}
-results <- simulation(9, 50)
+results <- quiet(simulation(15, 50))
 
 results
 ```
 # one iteration
 ```{r}
-scenario <- set[[9]]
+scenario <- set[[13]]
 scenario
 ```
 
