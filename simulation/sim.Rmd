@@ -1,0 +1,110 @@
+---
+title: "sim"
+author: "Alex Carriero"
+output: html_document
+---
+
+# Libraries
+```{r}
+# libraries 
+
+# general
+library(tidyverse)
+library(devtools)
+
+# pre-processing corrections
+library(ROSE)
+library(smotefamily)
+
+# models 
+library(glmnet)
+library(e1071)
+library(randomForest)
+library(xgboost)
+library(ebmc)
+
+# simulation features 
+library(pROC)
+library(SimDesign)
+```
+
+```{r}
+# how to install IRIC package from github
+```
+
+# Set up for each scenario 
+```{r}
+# setting scenarios 
+
+set <- readRDS("set.RData")
+```
+
+# Functions
+```{r}
+source("functions.R")
+```
+
+# Simulation 
+```{r}
+scenario <- set[[7]]
+
+for (i in 1:2000){    
+    df      <- generate_data(scenario)
+    test    <- generate_data_test(scenario)
+    
+    pred_probs <- tibble(
+      class = test$outcome, 
+      lrg   = lrg(df, test), 
+      svm   = svc(df, test), 
+      rnf   = rnf(df, test), 
+      xgb   = xgb(df, test), 
+      rub   = rub(df, test),
+    )
+    
+    
+    
+}
+```
+
+```{r}
+scenario
+```
+
+```{r}
+df   <- generate_data(scenario)
+test <- generate_data_test(scenario)
+
+pred_probs <- tibble(
+  class = test$outcome, 
+  lrg   = lrg(df, test), 
+  svm   = svc(df, test), 
+  rnf   = rnf(df, test), 
+  xgb   = xgb(df, test), 
+  rub   = rub(df, test),
+)
+
+pred_probs
+```
+
+```{r}
+pred_probs %>%
+  gather(key = "variable", value = "value", -class) %>%
+  ggplot(aes(x = value, y = as.numeric(class) -1, color = variable)) + 
+  geom_abline(slope = 1, intercept = 0, size = 1) +
+  geom_smooth(method = stats::loess, se = F) +
+  scale_color_brewer(palette = "Set2") +
+  xlab("Estimated Probability") +
+  ylab("Observed Proportion") +
+  ggtitle("Flexible Calibration Curves") + 
+  theme_minimal()
+```
+
+```{r}
+quiet(get_auc(pred_probs))
+```
+
+```{r}
+get_brier_score(pred_probs)
+```
+
+
