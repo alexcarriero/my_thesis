@@ -40,10 +40,7 @@ generate_data_test <- function(inn){
   mu0     = inn[[5]]
   mu1     = inn[[6]]
   sigma0  = inn[[7]]
-  sigma1  = inn[[8]] 
-  
-  # adjust n to to be 1/10 as large as in train set 
-  n = ceiling(0.1*n)
+  sigma1  = inn[[8]]
   
   # positive class
   n1      <- rbinom(1, n, ev)

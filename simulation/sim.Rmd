@@ -1,11 +1,48 @@
 ---
 title: "sim"
 author: "Alex Carriero"
-output: html_document
+output: 
+   bookdown::html_document2:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: false
+    theme: paper
 ---
 
-# Libraries
-```{r}
+<style type="text/css">
+  
+body{ /* Normal  */
+  font-size: 12px;
+  }
+td {  /* Table  */
+  font-size: 12px;
+}
+h1.title {
+  font-size: 18px;
+  color: DarkBlue;
+}
+h1 { /* Header 1 */
+  font-size: 18px;
+}
+h2 { /* Header 2 */
+  font-size: 18px;
+}
+h3 { /* Header 3 */
+  font-size: 18px;
+}
+code.r{ /* Code block */
+  font-size: 12px;
+}
+pre { /* Code block - determines code spacing between lines */
+  font-size: 14px;
+}
+</style>
+
+---
+
+# Set up 
+```{r, warning = F, message = F, echo = F}
 # libraries 
 
 # general
@@ -29,24 +66,25 @@ library(pROC)
 library(SimDesign)
 ```
 
-```{r}
+```{r, echo = F}
 # how to install IRIC package from github
 ```
 
-# Set up for each scenario 
 ```{r}
-# setting scenarios 
+# simulation scenarios 
 
 set <- readRDS("set.RData")
 ```
-
-# Functions
+ 
 ```{r}
+# functions
+
 source("functions.R")
 ```
 
-# Simulation 
 ```{r}
+# simulation function 
+
 simulation <- function(sc, iter){
   
   scenario <- set[[sc]]
@@ -76,7 +114,8 @@ simulation <- function(sc, iter){
       bri[i,]  <- get_brier_score(pp)
     
       plot     <- plot + 
-                  geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = variable), 
+                  geom_smooth(data = ppl, 
+                              aes(x = value, y = as.numeric(class) -1, color = variable), 
                               method = stats::loess, 
                               formula = y ~ x,
                               se = F, 
@@ -84,21 +123,136 @@ simulation <- function(sc, iter){
                   facet_wrap(~variable)
   }
 
-  out <- get_stats(auc, bri)
-  return(list(plot, out))
+  stats <- get_stats(auc, bri)
+  out   <- list("plot" = plot, "stats" = stats) 
+  return(out)
 }
 ```
 
+# Results 
 
-```{r}
-results <- quiet(simulation(15, 50))
-
-results
+### 8 Predictors, EV = 0.5, N = 0.5N
+```{r, warning = F}
+s_1 <- quiet(simulation(sc = 1, iter = 100))  # run simulation 
 ```
-# one iteration
+
 ```{r}
-scenario <- set[[13]]
-scenario
+# get calibration plot 
+s_1$plot
+
+# get statistics 
+s_1$stats
+```
+
+### 8 Predictors, EV = 0.2,  N = 0.5N
+```{r, warning = F}
+s_2 <- quiet(simulation(sc = 2, iter = 100))  # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_2$plot
+
+# get statistics
+s_2$stats
+```
+
+### 8 Predictors, EV = 0.02, N = 0.5N
+```{r, warning = F}
+s_3 <- quiet(simulation(sc = 3, iter = 20)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_3$plot
+
+# get statistics
+s_3$stats
+```
+
+### 8 Predictors, EV = 0.5,  N = N
+```{r, warning = F}
+s_4 <- quiet(simulation(sc = 4, iter = 100)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_4$plot
+
+# get statistics
+s_4$stats
+```
+
+### 8 Predictors, EV = 0.2,  N = N
+```{r, warning = F}
+s_5 <- quiet(simulation(sc = 5, iter = 100)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_5$plot
+
+# get statistics
+s_5$stats
+```
+
+### 8 Predictors, EV = 0.02, N = N
+
+```{r, warning = F}
+s_6 <- quiet(simulation(sc = 6, iter = 100)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_6$plot
+
+# get statistics
+s_6$stats
+```
+
+### 8 Predictors, EV = 0.5, N = 2N
+```{r, warning = F}
+s_7 <- quiet(simulation(sc = 7, iter = 100)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_7$plot
+
+# get statistics
+s_7$stats
+```
+
+### 8 Predictors, EV = 0.2, N = 2N
+```{r, warning = F}
+s_8 <- quiet(simulation(sc = 8, iter = 100)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_8$plot
+
+# get statistics
+s_8$stats
+```
+
+### 8 Predictors, EV = 0.02, N = 2N
+```{r, warning = F}
+s_8 <- quiet(simulation(sc = 8, iter = 100)) # run simulation 
+```
+
+```{r}
+# get calibration plot
+s_8$plot
+
+# get statistics
+s_8$stats
+```
+
+
+# One iteration
+```{r}
+scenario <- set[[2]]
 ```
 
 ```{r}
@@ -111,7 +265,7 @@ ppl  <- pp %>%
         gather(key = "variable", value = "value", -class)
 ```
 
-```{r}
+```{r, echo = F}
 plot <- ggplot() + 
         geom_abline(slope = 1, intercept = 0, size = 1) +
         scale_color_brewer(palette = "Set2") +
@@ -128,11 +282,11 @@ plot + geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = 
 ```
 
 ```{r}
-quiet(get_auc(pred_probs))
+quiet(get_auc(pp))
 ```
 
 ```{r}
-get_brier_score(pred_probs)
+get_brier_score(pp)
 ```
 
 
