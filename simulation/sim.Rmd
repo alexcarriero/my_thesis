@@ -64,6 +64,7 @@ library(ebmc)
 # simulation features 
 library(pROC)
 library(SimDesign)
+library(simsalapar)
 ```
 
 ```{r, echo = F}
@@ -87,6 +88,7 @@ source("functions.R")
 
 simulation <- function(sc, iter){
   
+  start    <- Sys.time()
   scenario <- set[[sc]]
 
   iter  <- iter
@@ -103,12 +105,12 @@ simulation <- function(sc, iter){
 
   for (i in 1:iter){    
       df       <- generate_data(scenario)
-      test     <- generate_data_test(scenario)
+      test     <- generate_data(scenario, test = TRUE)
     
       pp       <- pred_probs(df, test)
-    
+      
       ppl      <- pp %>%
-                  gather(key = "variable", value = "value", -class)
+                  pivot_longer(-class, names_to = "variable")
     
       auc[i,]  <- quiet(get_auc(pp))
       bri[i,]  <- get_brier_score(pp)
@@ -119,108 +121,129 @@ simulation <- function(sc, iter){
                               method = stats::loess, 
                               formula = y ~ x,
                               se = F, 
-                              size = 0.2) +
+                              size = 0.1) +
                   facet_wrap(~variable)
   }
-
-  stats <- get_stats(auc, bri)
-  out   <- list("plot" = plot, "stats" = stats) 
+  
+  
+  ggsave(paste0("plot_",sc,".pdf"), plot)  # save plot
+  stats <- get_stats(auc, bri)             # save statistics
+  
+  end <- Sys.time()
+  dif <- difftime(end, start, units = "mins")
+  
+  out   <- list("runtime" = dif, "stats" = stats) 
   return(out)
 }
 ```
+
 
 # Results 
 
 ### 8 Predictors, EV = 0.5, N = 0.5N
 ```{r, warning = F}
-s_1 <- quiet(simulation(sc = 1, iter = 100))  # run simulation 
+sim_1 <- quiet(simulation(sc = 1, iter = 100))  # run simulation 
 ```
 
 ```{r}
-# get calibration plot 
-s_1$plot
+# calibration plot saved as image
 
 # get statistics 
-s_1$stats
+sim_1$stats
+
+# runtime 
+sim_1$runtime
 ```
 
 ### 8 Predictors, EV = 0.2,  N = 0.5N
 ```{r, warning = F}
-s_2 <- quiet(simulation(sc = 2, iter = 100))  # run simulation 
+sim_2 <- quiet(simulation(sc = 2, iter = 100))  # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_2$plot
+# calibration plot saved as image
 
 # get statistics
-s_2$stats
+sim_2$stats
+
+# runtime
+sim_2$runtime
 ```
 
 ### 8 Predictors, EV = 0.02, N = 0.5N
 ```{r, warning = F}
-s_3 <- quiet(simulation(sc = 3, iter = 20)) # run simulation 
+sim_3 <- quiet(simulation(sc = 3, iter = 100)) # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_3$plot
+# calibration plot saved as image
 
 # get statistics
-s_3$stats
+sim_3$stats
+
+# runtime 
+sim_3$runtime
 ```
 
 ### 8 Predictors, EV = 0.5,  N = N
 ```{r, warning = F}
-s_4 <- quiet(simulation(sc = 4, iter = 100)) # run simulation 
+sim_4 <- quiet(simulation(sc = 4, iter = 100)) # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_4$plot
+# calibration plot saved as image
 
 # get statistics
-s_4$stats
+sim_4$stats
+
+# runtime 
+sim_4$runtime
 ```
 
 ### 8 Predictors, EV = 0.2,  N = N
 ```{r, warning = F}
-s_5 <- quiet(simulation(sc = 5, iter = 100)) # run simulation 
+sim_5 <- quiet(simulation(sc = 5, iter = 100)) # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_5$plot
+# calibration plot saved as image
 
 # get statistics
-s_5$stats
+sim_5$stats
+
+# runtime 
+sim_5$runtime
 ```
 
 ### 8 Predictors, EV = 0.02, N = N
 
 ```{r, warning = F}
-s_6 <- quiet(simulation(sc = 6, iter = 100)) # run simulation 
+sim_6 <- quiet(simulation(sc = 6, iter = 10)) # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_6$plot
+# calibration plot saved as image
 
 # get statistics
-s_6$stats
+sim_6$stats
+
+# runtime 
+sim_6$runtime
 ```
 
 ### 8 Predictors, EV = 0.5, N = 2N
 ```{r, warning = F}
-s_7 <- quiet(simulation(sc = 7, iter = 100)) # run simulation 
+sim_7 <- quiet(simulation(sc = 7, iter = 100)) # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_7$plot
+# calibration plot saved as image
 
 # get statistics
-s_7$stats
+sim_7$stats
+
+# runtime 
+sim_7$runtime
 ```
 
 ### 8 Predictors, EV = 0.2, N = 2N
@@ -229,24 +252,28 @@ s_8 <- quiet(simulation(sc = 8, iter = 100)) # run simulation
 ```
 
 ```{r}
-# get calibration plot
-s_8$plot
+# calibration plot saved as image
 
 # get statistics
-s_8$stats
+sim_8$stats
+
+# runtime 
+sim_8$runtime
 ```
 
 ### 8 Predictors, EV = 0.02, N = 2N
 ```{r, warning = F}
-s_8 <- quiet(simulation(sc = 8, iter = 100)) # run simulation 
+sim_9 <- quiet(simulation(sc = 9, iter = 100)) # run simulation 
 ```
 
 ```{r}
-# get calibration plot
-s_8$plot
+# calibration plot saved as image
 
 # get statistics
-s_8$stats
+sim_9$stats
+
+# runtime 
+sim_9$runtime
 ```
 
 
@@ -257,12 +284,12 @@ scenario <- set[[2]]
 
 ```{r}
 df   <- generate_data(scenario)
-test <- generate_data_test(scenario)
+test <- generate_data(scenario, test = TRUE)
 
 pp   <- pred_probs(df, test)
 
 ppl  <- pp %>%
-        gather(key = "variable", value = "value", -class)
+        pivot_longer(-class, names_to = "variable")
 ```
 
 ```{r, echo = F}
@@ -276,6 +303,7 @@ plot <- ggplot() +
 
 plot + geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = variable), 
                    method = stats::loess, 
+                   formula = y~x,
                    se = F, 
                    size = 0.3)+
         facet_wrap(~variable)
@@ -289,4 +317,45 @@ quiet(get_auc(pp))
 get_brier_score(pp)
 ```
 
+# fix problem with svm
+
+```{r}
+svc <- function(df, test){
+  
+  mod  <- svm(x = subset(df, select = -outcome), y = df$outcome, probability = T)
+  pred <- predict(mod, newdata = subset(test, select = -outcome), probability = T)
+  pred <- attr(pred, "probabilities")[,1]
+  return(pred)
+}
+```
+
+```{r}
+
+for(i in 1:1000){
+k = 0
+scenario <- set[[3]]
+df       <- generate_data(scenario)
+test     <- generate_data(scenario, test = TRUE)
+
+pp       <- pred_probs(df, test)
+
+}
+
+table(df$outcome)
+table(test$outcome)
+max(pp$svm)
+
+mod  <- svm(x = subset(df, select = -outcome), y = df$outcome, probability = T)
+pred <- predict(mod, newdata = subset(test, select = -outcome), probability = T)
+pred <- attr(pred, "probabilities")[,1]
+pp <- pred_probs(df, test)
+pp
+attr(pred, "probabilities")
+max(pp$svm)
+pred
+a <-attr(pred, "probabilities")
+max(pp$svm)
+pred
+
+```
 

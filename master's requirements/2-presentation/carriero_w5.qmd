@@ -22,7 +22,7 @@ format:
 -   Research Question
 -   Methods
 -   Results
--   Discussion / Questions
+-   Discussion / Question
 :::
 
 ## Introduction {.smaller}
@@ -87,16 +87,15 @@ Can class imbalance corrections improve the performance of clinical prediction m
 
 -   To determine the best practices for handling class imbalance when developing clinical prediction models for dichotomous risk prediction.
 
-
 **Data Generating Mechanism:**
 
 -   Data for each class generated independently via distinct multivariate normal distributions
 -   27 unique scenarios
 
-**Estimands:** 
+**Estimands:**
 
-- Out-of-sample predictive performance of clinical prediction models.
-- Performance based on: brier score, auc, calibration intercept, slope and flexible calibration curves. 
+-   Out-of-sample predictive performance of clinical prediction models.
+-   Performance based on: brier score, auc, calibration intercept, slope and flexible calibration curves.
 :::
 
 ## Methods {.smaller}
@@ -112,7 +111,7 @@ Can class imbalance corrections improve the performance of clinical prediction m
 
 ![](results_plot.png)
 
-### Statistics{.smaller}
+### Statistics {.smaller}
 
 there will an interactive table here
 
@@ -122,12 +121,13 @@ datatable(mtcars, options = list(pageLength = 5))
 ```
 :::
 
-## Discussion{.smaller} 
+## Discussion {.smaller}
+
 \
 \
 
-:::{style="font-size: 1.5em; text-align: center"}
-~ eventually there will be results that can be discussed here ~
+::: {style="font-size: 1.5em; text-align: center"}
+\~ eventually there will be results that can be discussed here \~
 :::
 
 ## Thank you, Next

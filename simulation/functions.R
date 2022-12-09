@@ -1,6 +1,7 @@
+
 # data generation --------------------------------------------------------------
 
-generate_data <- function(inn){
+generate_data <- function(inn, test = FALSE){
   
   npred   = inn[[1]]
   ev      = inn[[2]]
@@ -10,6 +11,9 @@ generate_data <- function(inn){
   mu1     = inn[[6]]
   sigma0  = inn[[7]]
   sigma1  = inn[[8]]
+  
+  # test set
+  if (test == TRUE){n  = n*10}
   
   # positive class
   n1      <- rbinom(1, n, ev)
@@ -29,50 +33,17 @@ generate_data <- function(inn){
   return(df)
 }
 
-
-
-generate_data_test <- function(inn){
-  
-  npred   = inn[[1]]
-  ev      = inn[[2]]
-  n.level = inn[[3]]
-  n       = inn[[4]]
-  mu0     = inn[[5]]
-  mu1     = inn[[6]]
-  sigma0  = inn[[7]]
-  sigma1  = inn[[8]]
-  
-  # positive class
-  n1      <- rbinom(1, n, ev)
-  class_1 <- mvrnorm(n1, mu1, sigma1)
-  
-  # negative class
-  n0      <- n - n1
-  class_0 <- mvrnorm(n0, mu0, sigma0)
-  
-  outcome <- c(rep(1, n1), rep(0, n0))
-  
-  # format data frame
-  df <- cbind(rbind(class_1, class_0), outcome) %>% 
-    as.data.frame() %>% 
-    mutate(outcome = as.factor(outcome))
-  
-  return(df)
-}
 
 # model implementation ---------------------------------------------------------
 
 lrg <- function(df, test){
-  
   mod  <- glm(outcome ~ ., family = "binomial", data = df)
   pred <- predict(mod,  newdata = test, type = "response")
   return(pred)
 }
 
 
-
 svc <- function(df, test){
-  
   mod  <- svm(x = subset(df, select = -outcome), y = df$outcome, probability = T)
   pred <- predict(mod, newdata = subset(test, select = -outcome), probability = T)
   pred <- attr(pred, "probabilities")[,1]
@@ -80,18 +51,14 @@ svc <- function(df, test){
 }
 
 
-
 rnf <- function(df, test){
-  
   mod  <- randomForest(outcome~., data = df) 
   pred <- predict(mod,  newdata = test, type = "prob")[,2]
   return(pred)
 }
 
 
-
 xgb <- function(df, test){
-  
   train_x <- model.matrix(outcome ~ ., df)[,-1]
   train_y <- as.numeric(df$outcome) - 1
   xgb     <- xgboost(data = train_x,
@@ -107,24 +74,23 @@ xgb <- function(df, test){
 }
 
 
-
 rub <- function(df, test){
-  mod  <- rus(outcome ~., size = 10, alg = "svm", data = df)
+  mod  <- rus(outcome ~., size = 10, alg = "c50", data = df)
   pred <- predict(mod, newdata = test)
 }
 
 
-
 pred_probs <- function(df, test){
-  
-  a <- tibble(
-    class = test$outcome, 
-    lrg   = lrg(df, test), 
-    svm   = svc(df, test), 
-    rnf   = rnf(df, test), 
-    xgb   = xgb(df, test), 
-    rub   = rub(df, test)
-  )
+  tryCatch.W.E({
+    a <- tibble(
+      class = test$outcome, 
+      lrg   = lrg(df, test), 
+      svm   = svc(df, test), 
+      rnf   = rnf(df, test), 
+      xgb   = xgb(df, test), 
+      rub   = rub(df, test)
+    )
+  })
   return(a)
 }
 
