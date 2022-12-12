@@ -94,6 +94,8 @@ simulation <- function(sc, iter){
   iter  <- iter
   auc   <- matrix(data = 0, nrow = iter, ncol = 5)
   bri   <- matrix(data = 0, nrow = iter, ncol = 5)
+  int   <- matrix(data = 0, nrow = iter, ncol = 5)
+  slp   <- matrix(data = 0, nrow = iter, ncol = 5)
 
   plot <- ggplot() + 
           geom_abline(slope = 1, intercept = 0, size = 1) +
@@ -114,6 +116,8 @@ simulation <- function(sc, iter){
     
       auc[i,]  <- quiet(get_auc(pp))
       bri[i,]  <- get_brier_score(pp)
+      int[i,]  <- get_int(pp)
+      slp[i,]  <- get_slp(pp)
     
       plot     <- plot + 
                   geom_smooth(data = ppl, 
@@ -127,7 +131,7 @@ simulation <- function(sc, iter){
   
   
   ggsave(paste0("plot_",sc,".pdf"), plot)  # save plot
-  stats <- get_stats(auc, bri)             # save statistics
+  stats <- get_stats(auc, bri, int, slp)   # save statistics
   
   end <- Sys.time()
   dif <- difftime(end, start, units = "mins")
@@ -140,152 +144,61 @@ simulation <- function(sc, iter){
 
 # Results 
 
-### 8 Predictors, EV = 0.5, N = 0.5N
 ```{r, warning = F}
-sim_1 <- quiet(simulation(sc = 1, iter = 100))  # run simulation 
-```
+### 8 Predictors, EV = 0.5, N = 0.5N
+sim_1 <- quiet(simulation(sc = 1, iter = 100))   # run simulation 
+saveRDS(sim_1, file = "sim_1.rds")               # save results
 
-```{r}
-# calibration plot saved as image
-
-# get statistics 
-sim_1$stats
-
-# runtime 
-sim_1$runtime
-```
 
 ### 8 Predictors, EV = 0.2,  N = 0.5N
-```{r, warning = F}
-sim_2 <- quiet(simulation(sc = 2, iter = 100))  # run simulation 
-```
+sim_2 <- quiet(simulation(sc = 2, iter = 100))   # run simulation 
+saveRDS(sim_2, file = "sim_2.rds")               # save results
 
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_2$stats
-
-# runtime
-sim_2$runtime
-```
 
 ### 8 Predictors, EV = 0.02, N = 0.5N
-```{r, warning = F}
-sim_3 <- quiet(simulation(sc = 3, iter = 100)) # run simulation 
-```
+sim_3 <- quiet(simulation(sc = 3, iter = 100))   # run simulation 
+saveRDS(sim_3, file = "sim_3.rds")               # save results
 
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_3$stats
-
-# runtime 
-sim_3$runtime
-```
 
 ### 8 Predictors, EV = 0.5,  N = N
-```{r, warning = F}
-sim_4 <- quiet(simulation(sc = 4, iter = 100)) # run simulation 
-```
+sim_4 <- quiet(simulation(sc = 4, iter = 100))   # run simulation 
+saveRDS(sim_4, file = "sim_4.rds")               # save results
 
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_4$stats
-
-# runtime 
-sim_4$runtime
-```
 
 ### 8 Predictors, EV = 0.2,  N = N
-```{r, warning = F}
-sim_5 <- quiet(simulation(sc = 5, iter = 100)) # run simulation 
-```
+sim_5 <- quiet(simulation(sc = 5, iter = 100))   # run simulation 
+saveRDS(sim_5, file = "sim_5.rds")               # save results
 
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_5$stats
-
-# runtime 
-sim_5$runtime
-```
 
 ### 8 Predictors, EV = 0.02, N = N
+sim_6 <- quiet(simulation(sc = 6, iter = 100))   # run simulation 
+saveRDS(sim_6, file = "sim_6.rds")               # save results
 
-```{r, warning = F}
-sim_6 <- quiet(simulation(sc = 6, iter = 10)) # run simulation 
-```
-
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_6$stats
-
-# runtime 
-sim_6$runtime
-```
 
 ### 8 Predictors, EV = 0.5, N = 2N
-```{r, warning = F}
-sim_7 <- quiet(simulation(sc = 7, iter = 100)) # run simulation 
-```
+sim_7 <- quiet(simulation(sc = 7, iter = 100))   # run simulation 
+saveRDS(sim_7, file = "sim_7.rds")               # save results
 
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_7$stats
-
-# runtime 
-sim_7$runtime
-```
 
 ### 8 Predictors, EV = 0.2, N = 2N
-```{r, warning = F}
-s_8 <- quiet(simulation(sc = 8, iter = 100)) # run simulation 
-```
-
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_8$stats
-
-# runtime 
-sim_8$runtime
-```
+sim_8 <- quiet(simulation(sc = 8, iter = 100))   # run simulation 
+saveRDS(sim_8, file = "sim_8.rds")               # save results
 
 ### 8 Predictors, EV = 0.02, N = 2N
-```{r, warning = F}
-sim_9 <- quiet(simulation(sc = 9, iter = 100)) # run simulation 
+sim_9 <- quiet(simulation(sc = 9, iter = 100))   # run simulation 
+saveRDS(sim_9, file = "sim_9.rds")               # save results
 ```
 
-```{r}
-# calibration plot saved as image
-
-# get statistics
-sim_9$stats
-
-# runtime 
-sim_9$runtime
-```
 
 
 # One iteration
 ```{r}
-scenario <- set[[2]]
+scenario <- set[[1]]
 ```
 
 ```{r}
 df   <- generate_data(scenario)
 test <- generate_data(scenario, test = TRUE)
-
 pp   <- pred_probs(df, test)
 
 ppl  <- pp %>%
@@ -308,54 +221,100 @@ plot + geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = 
                    size = 0.3)+
         facet_wrap(~variable)
 ```
-
 ```{r}
 quiet(get_auc(pp))
 ```
-
 ```{r}
 get_brier_score(pp)
 ```
-
-# fix problem with svm
-
 ```{r}
-svc <- function(df, test){
-  
-  mod  <- svm(x = subset(df, select = -outcome), y = df$outcome, probability = T)
-  pred <- predict(mod, newdata = subset(test, select = -outcome), probability = T)
-  pred <- attr(pred, "probabilities")[,1]
-  return(pred)
-}
+probs <- pp$lrg
+outcome <- pp$class
+mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
+mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
+summary(mod)
+coef(mod)[1]
 ```
 
 ```{r}
-
 for(i in 1:1000){
-k = 0
-scenario <- set[[3]]
-df       <- generate_data(scenario)
-test     <- generate_data(scenario, test = TRUE)
-
-pp       <- pred_probs(df, test)
-
+df   <- generate_data(scenario)
+test <- generate_data(scenario, test = TRUE)
+pp   <- pred_probs(df, test)
+get_int(pp)
+get_slp(pp)
 }
 
-table(df$outcome)
-table(test$outcome)
-max(pp$svm)
 
-mod  <- svm(x = subset(df, select = -outcome), y = df$outcome, probability = T)
-pred <- predict(mod, newdata = subset(test, select = -outcome), probability = T)
-pred <- attr(pred, "probabilities")[,1]
-pp <- pred_probs(df, test)
-pp
-attr(pred, "probabilities")
-max(pp$svm)
-pred
-a <-attr(pred, "probabilities")
-max(pp$svm)
-pred
+table(pp$class)
+get_int(pp)
+get_slp(pp)
 
+outcome <- pp$class
+probs <- pp$rnf
+mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
+mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
+
+sum(is.na(probs))
+min(probs)
+hist(log(probs/(1-probs)))
+
+log(0/(1-0))
 ```
+```{r}
+calibration_intercept <- function(probs, outcome){
+  
+  if(sum(probs == 1) != 0){
+    probs[probs == 1] <- 0.999
+  }
+  if(sum(probs == 0) != 0){
+    probs[probs == 0] <- 0.001
+  }
+  mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
+  int <- coef(mod)[1]
+  return(int)
+}
+
+calibration_slope <- function(probs, outcome){
+  
+  if(sum(probs == 1) != 0){
+    probs[probs == 1] <- 0.999
+  }
+  if(sum(probs == 0) != 0){
+    probs[probs == 0] <- 0.001
+  }
+  mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
+  slp <- coef(mod)[2]
+  return(slp)
+}
+```
+
+```{r}
+calibration <- function(probs,outcome){
+  brier_score <- brier(probs, outcome)
+  
+  if (sum(probs == 1) != 0){
+    probs[probs == 1] <- 1 - ((1-max(probs[probs != 1]))/2)
+  } 
+  
+  if (sum(probs == 0) != 0) {
+    probs[probs == 0] <- min(probs[probs != 0]) /2 
+  }
+  
+  slope_model <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
+  slope <- coef(slope_model)[2]
+  attributes(slope) <- NULL
+  intercept_model <- glm(outcome ~ 1, 
+                         offset = log(probs/(1-probs)), 
+                         family = "binomial")
+  intercept <- coef(intercept_model)
+  attributes(intercept) <- NULL
+  cal_results <- c(intercept, slope, brier_score)
+  
+  return(cal_results)
+}
+```
+
+
+
 

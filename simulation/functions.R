@@ -103,6 +103,33 @@ brier_score <- function(probs, outcome){
 }
 
 
+calibration_intercept <- function(probs, outcome){
+  if(sum(probs == 1) != 0){
+    probs[probs == 1] <- 0.999
+  }
+  if(sum(probs == 0) != 0){
+    probs[probs == 0] <- 0.001
+  }
+  mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
+  int <- coef(mod)[1]
+  return(int)
+}
+
+calibration_slope <- function(probs, outcome){
+  if(sum(probs == 1) != 0){
+    probs[probs == 1] <- 0.999
+  }
+  if(sum(probs == 0) != 0){
+    probs[probs == 0] <- 0.001
+  }
+  mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
+  slp <- coef(mod)[2]
+  return(slp)
+}
+
+
+# apply performance metrics ----------------------------------------------------
+
 get_brier_score <- function(tibble){
   vec = apply(tibble[-1], 2, brier_score, outcome = tibble$class)
   return(vec)
@@ -114,14 +141,31 @@ get_auc <- function(tibble){
   return(vec)
 }
 
-get_stats <- function(auc, brier){
+
+get_int <- function(tibble){
+  vec = apply(tibble[-1], 2, calibration_intercept, outcome = tibble$class)
+  return(vec)
+}
+
+
+get_slp <- function(tibble){
+  vec = apply(tibble[-1], 2, calibration_slope, outcome = tibble$class)
+  return(vec)
+}
+
+
+get_stats <- function(auc, bri, int, slp){
   
   out <- 
     rbind(
-      auc_mean   = apply(auc, 2, mean),
-      auc_sd     = apply(auc, 2, sd),
-      brier_mean = apply(brier, 2, mean),
-      brier_sd   = apply(brier, 2, sd)
+      auc_mean  = apply(auc, 2, mean),
+      auc_sd    = apply(auc, 2, sd),
+      bri_mean  = apply(bri, 2, mean),
+      bri_sd    = apply(bri, 2, sd), 
+      int_mean  = apply(int, 2, mean),
+      int_sd    = apply(int, 2, sd),
+      slp_mean  = apply(slp, 2, mean),
+      slp_sd    = apply(slp, 2, sd)
     )
   
   colnames(out) <- c("lrg", "svc", "rnf", "xgb", "rub")
