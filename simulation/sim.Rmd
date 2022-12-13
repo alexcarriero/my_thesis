@@ -69,17 +69,16 @@ library(simsalapar)
 
 ```{r, echo = F}
 # how to install IRIC package from github
+source("IRIC-master/R/Ensemble-based level/EasyEnsemble.R")
 ```
 
 ```{r}
 # simulation scenarios 
-
 set <- readRDS("set.RData")
 ```
  
 ```{r}
 # functions
-
 source("functions.R")
 ```
 
@@ -92,10 +91,10 @@ simulation <- function(sc, iter){
   scenario <- set[[sc]]
 
   iter  <- iter
-  auc   <- matrix(data = 0, nrow = iter, ncol = 5)
-  bri   <- matrix(data = 0, nrow = iter, ncol = 5)
-  int   <- matrix(data = 0, nrow = iter, ncol = 5)
-  slp   <- matrix(data = 0, nrow = iter, ncol = 5)
+  auc   <- matrix(data = 0, nrow = iter, ncol = 6)
+  bri   <- matrix(data = 0, nrow = iter, ncol = 6)
+  int   <- matrix(data = 0, nrow = iter, ncol = 6)
+  slp   <- matrix(data = 0, nrow = iter, ncol = 6)
 
   plot <- ggplot() + 
           geom_abline(slope = 1, intercept = 0, size = 1) +
@@ -130,7 +129,7 @@ simulation <- function(sc, iter){
   }
   
   
-  ggsave(paste0("plot_",sc,".pdf"), plot)  # save plot
+  ggsave(paste0("plot_",sc,".pdf"), plot, width=10, height = 6)  # save plot
   stats <- get_stats(auc, bri, int, slp)   # save statistics
   
   end <- Sys.time()
@@ -143,7 +142,6 @@ simulation <- function(sc, iter){
 
 
 # Results 
-
 ```{r, warning = F}
 ### 8 Predictors, EV = 0.5, N = 0.5N
 sim_1 <- quiet(simulation(sc = 1, iter = 100))   # run simulation 
@@ -193,7 +191,7 @@ saveRDS(sim_9, file = "sim_9.rds")               # save results
 
 # One iteration
 ```{r}
-scenario <- set[[1]]
+scenario <- set[[5]]
 ```
 
 ```{r}
@@ -221,100 +219,23 @@ plot + geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = 
                    size = 0.3)+
         facet_wrap(~variable)
 ```
+
 ```{r}
 quiet(get_auc(pp))
-```
-```{r}
 get_brier_score(pp)
 ```
-```{r}
-probs <- pp$lrg
-outcome <- pp$class
-mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
-mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
-summary(mod)
-coef(mod)[1]
-```
+
 
 ```{r}
-for(i in 1:1000){
-df   <- generate_data(scenario)
-test <- generate_data(scenario, test = TRUE)
-pp   <- pred_probs(df, test)
-get_int(pp)
-get_slp(pp)
-}
-
-
-table(pp$class)
-get_int(pp)
-get_slp(pp)
-
-outcome <- pp$class
-probs <- pp$rnf
-mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
-mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
-
-sum(is.na(probs))
-min(probs)
-hist(log(probs/(1-probs)))
-
-log(0/(1-0))
-```
-```{r}
-calibration_intercept <- function(probs, outcome){
+eas <- function(df, test){
+  train_x <- df %>% dplyr::select(-outcome)
+  train_y <- df %>% dplyr::pull(outcome)
+  test_x  <- test %>% dplyr::select(-outcome)
   
-  if(sum(probs == 1) != 0){
-    probs[probs == 1] <- 0.999
-  }
-  if(sum(probs == 0) != 0){
-    probs[probs == 0] <- 0.001
-  }
-  mod <- glm(outcome ~ 1, offset = log(probs/(1-probs)), family = "binomial")
-  int <- coef(mod)[1]
-  return(int)
-}
-
-calibration_slope <- function(probs, outcome){
-  
-  if(sum(probs == 1) != 0){
-    probs[probs == 1] <- 0.999
-  }
-  if(sum(probs == 0) != 0){
-    probs[probs == 0] <- 0.001
-  }
-  mod <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
-  slp <- coef(mod)[2]
-  return(slp)
+  mod  <- EasyEnsemble(train_x, train_y)
+  pred <- predict(mod, test_x, type = "probability")$X1
+  return(pred)
 }
 ```
-
-```{r}
-calibration <- function(probs,outcome){
-  brier_score <- brier(probs, outcome)
-  
-  if (sum(probs == 1) != 0){
-    probs[probs == 1] <- 1 - ((1-max(probs[probs != 1]))/2)
-  } 
-  
-  if (sum(probs == 0) != 0) {
-    probs[probs == 0] <- min(probs[probs != 0]) /2 
-  }
-  
-  slope_model <- glm(outcome ~ log(probs/(1-probs)), family = "binomial")
-  slope <- coef(slope_model)[2]
-  attributes(slope) <- NULL
-  intercept_model <- glm(outcome ~ 1, 
-                         offset = log(probs/(1-probs)), 
-                         family = "binomial")
-  intercept <- coef(intercept_model)
-  attributes(intercept) <- NULL
-  cal_results <- c(intercept, slope, brier_score)
-  
-  return(cal_results)
-}
-```
-
-
 
 

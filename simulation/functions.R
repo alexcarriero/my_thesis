@@ -77,8 +77,19 @@ xgb <- function(df, test){
 rub <- function(df, test){
   mod  <- rus(outcome ~., size = 10, alg = "c50", data = df)
   pred <- predict(mod, newdata = test)
+  return(pred)
 }
 
+
+eas <- function(df, test){
+  train_x <- df %>% dplyr::select(-outcome)
+  train_y <- df %>% dplyr::pull(outcome)
+  test_x  <- test %>% dplyr::select(-outcome)
+  
+  mod  <- EasyEnsemble(train_x, train_y)
+  pred <- predict(mod, test_x, type = "probability")$X1
+  return(pred)
+}
 
 pred_probs <- function(df, test){
   tryCatch.W.E({
@@ -88,7 +99,8 @@ pred_probs <- function(df, test){
       svm   = svc(df, test), 
       rnf   = rnf(df, test), 
       xgb   = xgb(df, test), 
-      rub   = rub(df, test)
+      rub   = rub(df, test), 
+      zee   = eas(df, test),
     )
   })
   return(a)
@@ -168,7 +180,7 @@ get_stats <- function(auc, bri, int, slp){
       slp_sd    = apply(slp, 2, sd)
     )
   
-  colnames(out) <- c("lrg", "svc", "rnf", "xgb", "rub")
+  colnames(out) <- c("lrg", "svc", "rnf", "xgb", "rub", "zee")
   return(out)
 }
 
