@@ -6,6 +6,7 @@ bibliography: presy.bib
 
 format: 
   revealjs:
+    embed-resources: true
     footer: Alex Carriero (9028757)
     theme: serif
     slide-number: true
@@ -71,7 +72,7 @@ Can class imbalance corrections improve the performance of clinical prediction m
 
 ::: r-stack
 ::: {.fragment .fade-in-then-out}
-**Idea: Create a fair comparison of class imbalance corrections.**
+**Idea: create a fair comparison for class imbalance corrections.**
 
 ![](methods.png){fig-align="center"}
 :::
