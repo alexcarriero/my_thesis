@@ -184,4 +184,24 @@ get_stats <- function(auc, bri, int, slp){
   return(out)
 }
 
+# pretty plot ----------------------------------------------------
 
+ready2plot <- function(pp){
+  ppl <- 
+    pp %>% 
+    rename("Logistic Regression" = "lrg", 
+           "Support Vector Machine" = "svm", 
+           "Random Forest" = "rnf", 
+           "XGBoost" = "xgb", 
+           "RUSBoost" = "rub", 
+           "EasyEnsemble" = "zee")%>%
+    pivot_longer(-class, names_to = "Method")%>%
+    mutate(Method = fct_relevel(Method, 
+                                "Logistic Regression", 
+                                "Support Vector Machine", 
+                                "Random Forest", 
+                                "XGBoost", 
+                                "RUSBoost", 
+                                "EasyEnsemble"))
+  return(ppl)
+}

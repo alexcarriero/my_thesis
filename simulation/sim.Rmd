@@ -49,6 +49,7 @@ pre { /* Code block - determines code spacing between lines */
 library(tidyverse)
 library(devtools)
 library(MASS)
+library(viridis)
 
 # pre-processing corrections
 library(ROSE)
@@ -101,7 +102,7 @@ simulation <- function(sc, iter){
           scale_color_brewer(palette = "Set2") +
           xlab("Estimated Probability") +
           ylab("Observed Proportion") +
-          ggtitle("Flexible Calibration Curves") + 
+          # ggtitle(paste("Event Fraction:", scenario[[2]])) + 
           theme_minimal() 
 
   for (i in 1:iter){    
@@ -109,28 +110,32 @@ simulation <- function(sc, iter){
       test     <- generate_data(scenario, test = TRUE)
     
       pp       <- pred_probs(df, test)
-      
-      ppl      <- pp %>%
-                  pivot_longer(-class, names_to = "variable")
     
       auc[i,]  <- quiet(get_auc(pp))
       bri[i,]  <- get_brier_score(pp)
       int[i,]  <- get_int(pp)
       slp[i,]  <- get_slp(pp)
+      
+      ppl      <- ready2plot(pp)
     
       plot     <- plot + 
-                  geom_smooth(data = ppl, 
-                              aes(x = value, y = as.numeric(class) -1, color = variable), 
-                              method = stats::loess, 
-                              formula = y ~ x,
-                              se = F, 
-                              size = 0.1) +
-                  facet_wrap(~variable)
+                  geom_line(data = ppl, 
+                            aes(x = value, y = as.numeric(class) -1), 
+                            stat = "smooth",
+                            method = stats::loess, 
+                            formula = y ~ x,
+                            se = F, 
+                            size = 0.1, 
+                            alpha = 0.3,
+                            color = "#0d0887") +
+                  xlim(0,1)+
+                  facet_wrap(~Method)+
+                  theme(legend.position = "none")
+                  # scale_color_viridis(discrete = TRUE, option = "D", direction = -1)
   }
   
-  
-  ggsave(paste0("plot_",sc,".pdf"), plot, width=10, height = 6)  # save plot
-  stats <- get_stats(auc, bri, int, slp)   # save statistics
+  ggsave(paste0("plot_",sc,".png"), plot, width=10, height = 4)  # save plot
+  stats <- get_stats(auc, bri, int, slp)                         # save statistics
   
   end <- Sys.time()
   dif <- difftime(end, start, units = "mins")
@@ -144,7 +149,7 @@ simulation <- function(sc, iter){
 # Results 
 ```{r, warning = F}
 ### 8 Predictors, EV = 0.5, N = 0.5N
-sim_1 <- quiet(simulation(sc = 1, iter = 100))   # run simulation 
+sim_1 <- quiet(simulation(sc = 1, iter = 10))    # run simulation 
 saveRDS(sim_1, file = "sim_1.rds")               # save results
 
 
@@ -159,18 +164,18 @@ saveRDS(sim_3, file = "sim_3.rds")               # save results
 
 
 ### 8 Predictors, EV = 0.5,  N = N
-sim_4 <- quiet(simulation(sc = 4, iter = 100))   # run simulation 
+sim_4 <- quiet(simulation(sc = 4, iter = 200))   # run simulation 
 saveRDS(sim_4, file = "sim_4.rds")               # save results
 
 
 ### 8 Predictors, EV = 0.2,  N = N
-sim_5 <- quiet(simulation(sc = 5, iter = 100))   # run simulation 
-saveRDS(sim_5, file = "sim_5.rds")               # save results
+sim_5 <- quiet(simulation(sc = 5, iter = 200))    # run simulation 
+saveRDS(sim_5, file = "sim_5.rds")                # save results
 
 
 ### 8 Predictors, EV = 0.02, N = N
-sim_6 <- quiet(simulation(sc = 6, iter = 100))   # run simulation 
-saveRDS(sim_6, file = "sim_6.rds")               # save results
+sim_6 <- quiet(simulation(sc = 6, iter = 200))    # run simulation 
+saveRDS(sim_6, file = "sim_6.rds")                # save results
 
 
 ### 8 Predictors, EV = 0.5, N = 2N
@@ -187,14 +192,15 @@ sim_9 <- quiet(simulation(sc = 9, iter = 100))   # run simulation
 saveRDS(sim_9, file = "sim_9.rds")               # save results
 ```
 
-
+```{r}
+# Error: C stack usage 7954040 is too close to the limit
+Cstack_info()
+```
 
 # One iteration
 ```{r}
 scenario <- set[[5]]
-```
 
-```{r}
 df   <- generate_data(scenario)
 test <- generate_data(scenario, test = TRUE)
 pp   <- pred_probs(df, test)
@@ -210,13 +216,15 @@ plot <- ggplot() +
         xlab("Estimated Probability") +
         ylab("Observed Proportion") +
         ggtitle("Flexible Calibration Curves") + 
-        theme_minimal() 
+        theme_classic() 
 
-plot + geom_smooth(data = ppl, aes(x = value, y = as.numeric(class) -1, color = variable), 
+plot + geom_line(data = ppl, aes(x = value, y = as.numeric(class) -1, color = variable), 
+                   stat ="smooth", 
                    method = stats::loess, 
                    formula = y~x,
                    se = F, 
-                   size = 0.3)+
+                   size = 0.3, 
+                   alpha = 0.5)+
         facet_wrap(~variable)
 ```
 

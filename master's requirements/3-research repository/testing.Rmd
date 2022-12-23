@@ -1,0 +1,229 @@
+---
+title: A demonstration of the \LaTeX class file for Statistics in Medicine with Rmarkdown
+author:
+- name: Alex Carriero*
+  num: a,b
+- name: Maarten van Smeden
+  num: b
+- name: Kim Luijken
+  num: c
+- name: Ben van Calster
+  num: d
+address:
+- num: a
+  org: Department of Incredible Research, University A, City A, Country A
+- num: b
+  org: Department of Applied Things, University B, City B, Country B
+- num: c
+  org: Very Important Stuff Committee, Institute C, City C, Country C
+- num: d
+  org: Very Important Stuff Committee, Institute D, City D, Country D
+corres: "*Corresponding author name, This is sample corresponding address. \\email{authorone@gmail.com}"
+presentaddress: This is sample for present address text this is sample for present address text
+authormark: Uthor \emph{et al}.
+articletype: Research article
+abstract: " hello its me "
+keywords: Class file; \LaTeX; Statist. Med.; Rmarkdown;
+bibliography: bibfile.bib
+output: rticles::sim_article
+---
+
+\newpage
+
+# Introduction
+
+     Prediction modelling in medicine is gaining increasing attention. Clinicians are often interested in predicting a patient's risk of disease. Due to the (thankfully) rare nature of many diseases, the data available to train clinical prediction models are often heavily imbalanced (i.e., the number of patients in one class dramatically outnumbers the other) [@summary_m]. This is referred to as class imbalance. Class imbalance is seen as a major problem as it is known to degrade model performance [@yu]. Consequently, imbalance correction methodologies are proposed as a solution [@yu].\
+
+     An ideal imbalance correction will improve all aspects of model performance. These criteria include: classification accuracy, discrimination and calibration. Accuracy refers to the proportion of patients that a model classifies correctly (after a risk threshold is imposed). Discrimination refers to a model's ability to yield higher risk estimates for patients in the positive class than for those in the negative class. Finally, calibration refers to the reliability of the risk predictions themselves; for instance, a poorly calibrated model may produce risk predictions that consistently over- or under-estimate reality, or produce risk estimates which are too extreme (too close of 0 or 1) or too modest [@achilles].\
+
+     In a clinical context, a model is only useful if it is well calibrated[\@]. This is because in practice, the risk predictions are used by clinicians to council patients and inform treatment decisions. If a model is poorly calibrated, the personal costs to the patient may be enormous. Further, it is entirely possible for a model to exhibit excellent classification accuracy and discrimination while calibration is poor [@achilles]. Therefore, assessing only discrimination and accuracy is insufficient.\
+
+     Class imbalance is not unique to medical data sets and literature introducing imbalance correction methods arises from many disciplines. An abundance of imbalance corrections exist and are summarized by [@summary_b; @summary_lp; @summary_m; @summary_h; @summary_k]. Information regarding the effect of these corrections on model calibration is sparse. Only one study has assessed the impact of imbalance corrections on model calibration. @ruben demonstrated that implementing imbalance corrections lead to dramatically deteriorated model calibration, to the extent that no correction was recommended [@ruben]. In this study, models were developed using logistic regression and penalized (ridge) logistic regression [@ruben].\
+
+     Motivated by the work of @ruben, we must ensure that the "cure" is not worse than the disease. In our research, we aim to assess the impact of imbalance corrections on model calibration for prediction models trained with a wider variety of classification algorithms including: linear classifiers, ensemble learning algorithms and algorithms specifically designed to handle class imbalance. Furthermore, we aim to answer the question: can imbalance corrections improve overall model performance without comprising model calibration?
+
+# Methods
+
+The performance of several imbalance corrections is compared by means of a simulation study.
+
+## Imbalance Corrections and Classification Algorithms
+
+\
+
+**Imbalance Corrections**
+
+-   random under sampling (RUS) [@ROSE],
+-   random over sampling (ROS) [@ROSE],
+-   synthetic majority over sampling technique (SMOTE) [@smote],
+-   SMOTE-edited nearest neighbors (SMOTE-ENN) [@iric].
+
+**Classification Algorithms**
+
+-   logistic regression (base R),
+-   support vector machine [@esvm],
+-   random forest [@rf],
+-   XG Boost [@xg],
+-   RUSBoost [@ebmc]
+-   EasyEnsemble [@iric]
+
+## Full Study vs. Pilot Study
+
+\
+
+**Full Study**\
+\
+To gain insight into the performance of imbalance corrections under various scenarios we intend to vary three characteristics of the data generated in our simulation study: number of predictors, event fraction and sample size. In the full study we investigate the effect of imbalance corrections on prediction model performance in 27 (3 x 3 x 3) unique scenarios. The number of predictors will vary through the set {8,16,32} and event fraction through the set {0.5, 0.2, 0.02}. The minimum sample size for the prediction model (N) will be computed according to formulae presented in @riley. Sample size will then vary through the set {$\frac{1}{2}$N, N and 2N}.\
+\
+
+**Pilot Study**\
+\
+In this study we investigate the baseline performance of the prediction models. No imbalance corrections will be applied. The aim in this study is to determine the baseline performance of prediction models developed with the six classification algorithms under 2 scenarios. These scenarios, are presented in Table 1.
+
+## Simulation Study
+
+We adhere to the ADEMP guidelines for the design and reporting of our simulation study [@tim_morris].
+
+**Aim**\
+\
+We aim to determine the best practices for handling class imbalance when developing clinical prediction models for dichotomous risk prediction. Under a variety of scenarios, four imbalance corrections and six classification algorithms will be used to train prediction models; models will then be systematically compared based on their out-of-sample predictive performance.\
+
+We aim to identify any combination of imbalance correction and classification algorithm that, together, produce a model which outperforms it's associated control model (a model trained using the classification algorithm and no imbalance correction).\
+\
+
+**Data-Generating Mechanism**\
+\
+Data for each class is generated independently from two distinct multivariate normal distributions:\
+\
+      Class 0: $\mathbf{X} \sim mvn( \pmb{\mu_0}, \pmb{\Sigma_0})$ = $mvn(\pmb{0}, \pmb{\Sigma_0})$\
+\
+      Class 1: $\mathbf{X} \sim mvn( \pmb{\mu_1}, \pmb{\Sigma_1})$ = $mvn(\pmb{\Delta_\mu}, \pmb{\Sigma_0} - \pmb{\Delta_\Sigma})$\
+
+The parameters (mean vector and covariance matrix) of the data generating distributions are distinct between the classes. In the formulae above, $\pmb{\Delta_\mu}$ refers to the vector housing the difference in predictor means between the two classes. Similarly, $\pmb{\Delta_\Sigma}$ refers to the matrix housing the difference in predictor variances/covariances between the classes.\
+\
+In class 0, all predictor means are fixed to zero and all variances are fixed to 1. In class 1, all means are stored in the vector $\pmb{\Delta_\mu}$, there is no variation in means among predictors within a class, thus, every element in the vector $\pmb{\Delta_\mu}$ is equivalent; denoted by $\delta_\mu$. Similarly, there is no variation in predictor variances within a class, so every diagonal element in $\pmb{\Delta_\Sigma}$ is equivalent; diagonal elements are denoted by $\delta_\Sigma$.\
+\
+Finally, $80$% of the predictors are allowed to covary. All correlations among predictors in each class are set to $0.2$. Correlation matrices between the classes are therefore, equivalent; off-diagonal elements of $\pmb{\Delta_\Sigma}$ are computed such that the correlation matrices between the two classes are equivalent. Note, the covariance matrices are *not* equivalent between the classes. For example, in scenario where we have 8 predictors:\
+\
+mean and covariance structure for class 0, \begin{equation*}
+\pmb{\mu_0} = \begin{bmatrix}
+ \\ 0 \\ 0 \\ 0\\ 0 \\ 0 \\ 0 \\ 0 \\ 0
+\end{bmatrix}, \pmb{\Sigma_0} = \begin{bmatrix}
+1   & 0.2 & 0.2 & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 1   & 0.2 & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 1   & 0.2 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 1 & 0.2 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 0.2 & 1 & 0.2 & 0 & 0\\
+0.2 & 0.2 & 0.2   & 0.2 & 0.2 & 1 & 0 & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 1 & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 0 & 1\\
+\end{bmatrix}
+\end{equation*}
+
+mean and covariance structure for class 1, \begin{equation*}
+\pmb{\mu_1} = \begin{bmatrix}
+ \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu
+\end{bmatrix}, \pmb{\Sigma_1} = \begin{bmatrix}
+1 - \delta_\Sigma   & z & z & z & z & z & 0 & 0\\
+z & 1 - \delta_\Sigma   & z & z & z & z & 0 & 0\\
+z & z & 1 - \delta_\Sigma   & z & z & z & 0 & 0\\
+z & z & z   & 1 - \delta_\Sigma & z & z & 0 & 0\\
+z & z & z   & z & 1 - \delta_\Sigma & z & 0 & 0\\
+z & z & z   & z & z & 1 - \delta_\Sigma & 0 & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 1 - \delta_\Sigma & 0\\
+0   & 0   & 0     &  0 & 0    & 0 & 0 & 1 - \delta_\Sigma\\
+\end{bmatrix}
+\end{equation*}.\
+\
+Here, $z = \frac{(1-\delta_\Sigma)*0.2}{1}$, to ensure the correlation matrices of the two classes are equivalent.\
+\
+For every scenario, Tte parameter values for the data generating distributions ($\delta_\mu$ and $\delta_\Sigma$) in each class are selected to generate a $\Delta C$ Statistic $=0.85$. Their values are computed analytically, based on formulae from @mvauc. This derivation is shown in Appendix A.\
+\
+Finally, given that data for each class are generated independently, we have excellent control over how many observations are generated under each class. The number of observations from the positive class ($n_1$) will be will be sampled from the binomial distribution with probability equal to the specified event fraction. The number of observations in the negative class ($n_0$) will then be computed as $N - n_1$, where $N$ is the total sample size specified for the prediction model.\
+\
+
+**Estimands**\
+\
+The focus of this study is the out-of-sample predictive performance of clinical prediction models for dichotomous risk prediction.\
+\
+
+**Methods**\
+\
+Under each scenario, $2000$ data sets will be generated. Each data set will be comprised of training and validation data. The training and validation data will be generated independently using identical data generating mechanisms. This is done to ensure the same event fraction in the training and validation data. The validation data is generated to be 10x larger than the training set.\
+\
+For each generated data set, five imbalance corrections (four and one control) will be applied to the training set. Six prediction models will then be developed for each of the five imbalance corrected training sets. In other words, each data set will result in: 5 corrected training sets x 6 classification algorithms = 30 prediction models. All models will be trained using training data sets. Out-of-sample performance will be then be assessed using the validation data.\
+\
+
+**Performance Measures**
+
+Out-of-sample model performance will be assessed using measures of discrimination, accuracy and calibration.\
+\
+Discrimination will be measured by area under the receiver operator curve ($\Delta$C-statistic); computed using the function *auc* from `pROC` [@pROC].\
+\
+Accuracy will be measured by Brier Score calculated using the equation (1).\
+\begin{equation}
+\mathrm{Brier \ Score} = \frac{1}{N} \sum_{i=1}^{N}(p_i - o_i)^2
+\end{equation}
+
+where, $N$ is the sample size, $p_i$ represents the predicted probability for the $i^{th}$ observation and $o_i$ represents the observed binary outcome ($0$ or $1$) for the $i^{th}$ observation. Measures of accuracy which involve the selection of a decision threshold (e.g., total accuracy, sensitivity, specificity) will not be considered.\
+\
+Calibration will be measured empirically in terms of calibration intercept and slope. Calibration intercept is calculated as the regression intercept resulting from the regression equation shown in (2). Calibration slope is calculated as the regression slope resulting from the regression equation shown in (3). Model calibration will be visualized using flexible model calibration curves fit using the loess regression.\
+
+-   calibration intercept and slope formulas
+-   means and mcmc errors will be presented
+
+**Software**
+
+All analyses will be conducting using R version 4.1.2 [@r]. For the full study, the high performance computers at University Medical Center Utrecht will be utilized.
+
+\newpage
+
+# Results
+
+# Discussion
+
+## Figures and Tables
+
+```{r, results = "asis", warning = F, echo = F, message = F}
+library(xtable)
+library(tidyverse)
+read.csv("table.csv") %>%
+  filter(npred == 8, n == "N")%>% 
+  dplyr::select(npred, ef, n, ss)%>%
+  rename("Event Fraction"    = ef, 
+         "N Level"           = n,
+         "No. Predictors"    = npred,
+         "Sample Size"       = ss)%>%
+  xtable(caption = "Table Caption", label = "tab:table")%>%
+  print(comment = FALSE)
+```
+
+```{r, echo = F, out.width="100%",  out.height="30%", fig.ncol=1, fig.cap="Fancy Caption\\label{fig:plot}", fig.subcap=c(" ", " ", " "), fig.align="center"}
+library(knitr)
+include_graphics(c("images/plot_4.png", "images/plot_5.png", "images/plot_6.png"))
+```
+
+
+```{r, echo = F, warning = F, message = F}
+library(kableExtra)
+four <- readRDS("sim_4.rds")
+five <- readRDS("sim_5.rds")
+six  <- readRDS("sim_6.rds")
+
+stats <- rbind(four$stats, five$stats, six$stats)
+# stats <- cbind(c(rep("EV = 0.5", 8), rep("EV = 0.2", 8), rep("EV = 0.02", 8)), stats)
+colnames(stats)<- c("Logistic Regression", "Support Vector Machine", 
+                    "Random Forest", "XGBoost", "RUSBoost", "EasyEnsemble")
+stats %>%
+  kbl(booktabs = T, digits = 2, escape = T,
+      linesep = "\\addlinespace",
+      caption = "Nice Table")%>%
+  kable_styling(full_width = F, latex_options ="hold_position") %>%
+  pack_rows("Event Fraction: 0.5",   1,  8) %>% 
+  pack_rows("Event Fraction: 0.2",   9, 16) %>% 
+  pack_rows("Event Fraction: 0.02", 17, 24)
+```
+
+
+
+
+

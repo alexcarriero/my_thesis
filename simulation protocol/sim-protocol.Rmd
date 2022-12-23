@@ -122,7 +122,8 @@ for (i in 1:27){
 ```{r, echo = F, warning = F, message = F, render = F}
 a <- read.csv("sim_settings.csv")
 
-a %>% 
+a <- 
+  a %>%
   as.data.frame() %>% 
   dplyr::select(-X)%>%
   mutate(npred = as.numeric(npred),
@@ -141,7 +142,7 @@ a %>%
          "No. Predictors"    = npred,
          "Sample Size"       = ss,
          "$\\delta_\\mu$"    = dmu, 
-         "$\\delta_\\Sigma$" = dsig)%>%
+         "$\\delta_\\Sigma$" = dsig) %>%
   kbl(booktabs = T, digits = 2, escape = F,
       linesep = "\\addlinespace",
       caption = "Summary of parameters used in data generating mechanism for all simulation scenarios")%>%
@@ -149,6 +150,9 @@ a %>%
   pack_rows("0.5N", 1,9) %>% 
   pack_rows("N", 10, 18) %>% 
   pack_rows("2N", 19, 27)
+
+a
+# write_csv(a, file ="table.csv")
 ```
 
 #### 1.2.3 Outcomes\
