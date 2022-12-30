@@ -75,7 +75,7 @@ source("IRIC-master/R/Ensemble-based level/EasyEnsemble.R")
 
 ```{r}
 # simulation scenarios 
-set <- readRDS("set.RData")
+set <- readRDS("data-generating-mechanism/set.RData")
 ```
  
 ```{r}
@@ -226,24 +226,6 @@ plot + geom_line(data = ppl, aes(x = value, y = as.numeric(class) -1, color = va
                    size = 0.3, 
                    alpha = 0.5)+
         facet_wrap(~variable)
-```
-
-```{r}
-quiet(get_auc(pp))
-get_brier_score(pp)
-```
-
-
-```{r}
-eas <- function(df, test){
-  train_x <- df %>% dplyr::select(-outcome)
-  train_y <- df %>% dplyr::pull(outcome)
-  test_x  <- test %>% dplyr::select(-outcome)
-  
-  mod  <- EasyEnsemble(train_x, train_y)
-  pred <- predict(mod, test_x, type = "probability")$X1
-  return(pred)
-}
 ```
 
 

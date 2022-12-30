@@ -120,7 +120,7 @@ for (i in 1:27){
 ```
 
 ```{r, echo = F, warning = F, message = F, render = F}
-a <- read.csv("sim_settings.csv")
+a <- read.csv("/Users/alexcarriero/Desktop/The/simulation/data-generating-mechanism/sim_settings.csv")
 
 a <- 
   a %>%
