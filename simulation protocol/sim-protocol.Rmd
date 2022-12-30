@@ -138,6 +138,7 @@ a <-
                          "1"   = "N", 
                          "2"   = "2N",))%>%
   dplyr::select(npred, ef, ss, dmu, dsig, AUC)%>%
+  # write_csv(a, file ="table.csv")
   rename("Event Fraction"    = ef, 
          "No. Predictors"    = npred,
          "Sample Size"       = ss,
@@ -152,7 +153,6 @@ a <-
   pack_rows("2N", 19, 27)
 
 a
-# write_csv(a, file ="table.csv")
 ```
 
 #### 1.2.3 Outcomes\

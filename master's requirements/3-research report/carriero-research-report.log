@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.18)  23 DEC 2022 07:32
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.12.18)  30 DEC 2022 14:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -611,71 +611,66 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 
 Package natbib Warning: Citation `pmpsampsize' on page 4 undefined on input line 213.
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 265--267
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 268--293
-
- []
-
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 338--342
+Underfull \hbox (badness 10000) in paragraph at lines 265--290
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 350--374
+Underfull \hbox (badness 10000) in paragraph at lines 335--339
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 347--370
 
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 375--382
+Underfull \hbox (badness 10000) in paragraph at lines 371--378
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 383--392
+Underfull \hbox (badness 10000) in paragraph at lines 379--388
 
  []
 
 
-Overfull \hbox (30.07755pt too wide) in paragraph at lines 406--448
+Overfull \hbox (30.07755pt too wide) in paragraph at lines 402--444
  [][] 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/plot_4.png, id=76, 3011.25pt x 1204.5pt>
+<images/plot_4.png, id=75, 3011.25pt x 1204.5pt>
 File: images/plot_4.png Graphic file (type png)
 <use images/plot_4.png>
-Package pdftex.def Info: images/plot_4.png  used on input line 452.
+Package pdftex.def Info: images/plot_4.png  used on input line 448.
 (pdftex.def)             Requested size: 406.50122pt x 162.60048pt.
-<images/plot_5.png, id=78, 3011.25pt x 1204.5pt>
+<images/plot_5.png, id=77, 3011.25pt x 1204.5pt>
 File: images/plot_5.png Graphic file (type png)
 <use images/plot_5.png>
-Package pdftex.def Info: images/plot_5.png  used on input line 452.
+Package pdftex.def Info: images/plot_5.png  used on input line 448.
 (pdftex.def)             Requested size: 406.50122pt x 162.60048pt.
-<images/plot_6.png, id=79, 3011.25pt x 1204.5pt>
+<images/plot_6.png, id=78, 3011.25pt x 1204.5pt>
 File: images/plot_6.png Graphic file (type png)
 <use images/plot_6.png>
-Package pdftex.def Info: images/plot_6.png  used on input line 452.
+Package pdftex.def Info: images/plot_6.png  used on input line 448.
 (pdftex.def)             Requested size: 406.50122pt x 162.60048pt.
 [6] [7 <./images/plot_4.png> <./images/plot_5.png> <./images/plot_6.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 464--473
+Underfull \hbox (badness 10000) in paragraph at lines 460--469
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 474--483
+Underfull \hbox (badness 10000) in paragraph at lines 470--479
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 484--491
+Underfull \hbox (badness 10000) in paragraph at lines 480--487
 
  []
 
@@ -692,11 +687,11 @@ Here is how much of TeX's memory you used:
  586052 words of font info for 81 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  86i,13n,91p,593b,482s stack positions out of 10000i,1000n,20000p,200000b,200000s
-{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}</Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr5.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on carriero-research-report.pdf (9 pages, 2904105 bytes).
+{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}</Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
+Output written on carriero-research-report.pdf (9 pages, 2899546 bytes).
 PDF statistics:
- 225 PDF objects out of 1000 (max. 8388607)
- 171 compressed objects within 2 object streams
+ 220 PDF objects out of 1000 (max. 8388607)
+ 168 compressed objects within 2 object streams
  39 named destinations out of 1000 (max. 500000)
  48 words of extra memory for PDF output out of 10000 (max. 10000000)
 
