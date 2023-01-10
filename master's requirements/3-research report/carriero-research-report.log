@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.2)  9 JAN 2023 23:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2023.1.2)  10 JAN 2023 00:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -591,52 +591,52 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.191 \newpage
+l.192 \newpage
                [1]
-Underfull \hbox (badness 10000) in paragraph at lines 196--204
+Underfull \hbox (badness 10000) in paragraph at lines 197--205
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 207--213
+Underfull \hbox (badness 10000) in paragraph at lines 208--214
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 216--226
+Underfull \hbox (badness 10000) in paragraph at lines 217--227
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 227--250
+Underfull \hbox (badness 10000) in paragraph at lines 228--251
 
  []
 
 [2]
-Overfull \hbox (2.2427pt too wide) detected at line 283
+Overfull \hbox (2.2427pt too wide) detected at line 284
 [] \OT1/lmr/m/n/10 = [] \OML/lmm/m/it/10 ; [] \OT1/lmr/m/n/10 = [] \OML/lmm/m/it/10 :
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 283--287
+Underfull \hbox (badness 10000) in paragraph at lines 284--288
 
  []
 
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 297.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 298.
 (/Users/alexcarriero/Library/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-Underfull \hbox (badness 10000) in paragraph at lines 311--330
+Underfull \hbox (badness 10000) in paragraph at lines 312--331
 
  []
 
 [3]
-Underfull \hbox (badness 1019) in paragraph at lines 349--374
+Underfull \hbox (badness 1019) in paragraph at lines 350--375
 \T1/lmr/m/n/10 Ad-di-tion-ally, based on lit-er-a-ture sum-ma-riz-ing com-mon strate-gies to han-dle class
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 349--374
+Underfull \hbox (badness 10000) in paragraph at lines 350--375
 
  []
 
@@ -644,57 +644,57 @@ Underfull \hbox (badness 10000) in paragraph at lines 349--374
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 436--445
+Underfull \hbox (badness 10000) in paragraph at lines 437--446
 
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 453--468
+Underfull \hbox (badness 10000) in paragraph at lines 454--469
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 469--481
+Underfull \hbox (badness 10000) in paragraph at lines 470--482
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 482--490
+Underfull \hbox (badness 10000) in paragraph at lines 483--491
 
  []
 
 
-Overfull \hbox (9.47043pt too wide) in paragraph at lines 545--545
+Overfull \hbox (9.47043pt too wide) in paragraph at lines 546--546
 []\T1/lmr/m/n/10 Concordance 
  []
 
 
-Overfull \hbox (2.8037pt too wide) in paragraph at lines 545--545
+Overfull \hbox (2.8037pt too wide) in paragraph at lines 546--546
  []\T1/lmr/m/n/10 Calibration 
  []
 
 
-Overfull \hbox (2.8037pt too wide) in paragraph at lines 545--545
+Overfull \hbox (2.8037pt too wide) in paragraph at lines 546--546
  []\T1/lmr/m/n/10 Calibration 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<images/plot_4.png, id=120, 3011.25pt x 1204.5pt>
+<images/plot_4.png, id=121, 3011.25pt x 1204.5pt>
 File: images/plot_4.png Graphic file (type png)
 <use images/plot_4.png>
-Package pdftex.def Info: images/plot_4.png  used on input line 550.
+Package pdftex.def Info: images/plot_4.png  used on input line 551.
 (pdftex.def)             Requested size: 354.58006pt x 141.83202pt.
-<images/plot_5.png, id=122, 3011.25pt x 1204.5pt>
+<images/plot_5.png, id=123, 3011.25pt x 1204.5pt>
 File: images/plot_5.png Graphic file (type png)
 <use images/plot_5.png>
-Package pdftex.def Info: images/plot_5.png  used on input line 550.
+Package pdftex.def Info: images/plot_5.png  used on input line 551.
 (pdftex.def)             Requested size: 354.58006pt x 141.83202pt.
-<images/plot_6.png, id=123, 3011.25pt x 1204.5pt>
+<images/plot_6.png, id=124, 3011.25pt x 1204.5pt>
 File: images/plot_6.png Graphic file (type png)
 <use images/plot_6.png>
-Package pdftex.def Info: images/plot_6.png  used on input line 550.
+Package pdftex.def Info: images/plot_6.png  used on input line 551.
 (pdftex.def)             Requested size: 354.58006pt x 141.83202pt.
 [6] [7 <./images/plot_4.png> <./images/plot_5.png> <./images/plot_6.png>]
 
@@ -710,10 +710,10 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  86i,15n,91p,593b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}</Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri8.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></Users/alexcarriero/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on carriero-research-report.pdf (12 pages, 2938318 bytes).
+Output written on carriero-research-report.pdf (12 pages, 2938387 bytes).
 PDF statistics:
- 276 PDF objects out of 1000 (max. 8388607)
- 218 compressed objects within 3 object streams
+ 277 PDF objects out of 1000 (max. 8388607)
+ 219 compressed objects within 3 object streams
  56 named destinations out of 1000 (max. 500000)
  48 words of extra memory for PDF output out of 10000 (max. 10000000)
 
