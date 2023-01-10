@@ -170,14 +170,14 @@ get_stats <- function(auc, bri, int, slp){
   
   out <- 
     rbind(
-      auc_mean  = apply(auc, 2, mean),
-      auc_sd    = apply(auc, 2, sd),
-      bri_mean  = apply(bri, 2, mean),
-      bri_sd    = apply(bri, 2, sd), 
-      int_mean  = apply(int, 2, mean),
-      int_sd    = apply(int, 2, sd),
-      slp_mean  = apply(slp, 2, mean),
-      slp_sd    = apply(slp, 2, sd)
+      auc_med  = apply(auc, 2, median),
+      auc_iqr  = apply(auc, 2, IQR),
+      bri_med  = apply(bri, 2, median),
+      bri_iqr  = apply(bri, 2, IQR), 
+      int_med  = apply(int, 2, median),
+      int_iqr  = apply(int, 2, IQR),
+      slp_med  = apply(slp, 2, median),
+      slp_iqr  = apply(slp, 2, IQR)
     )
   
   colnames(out) <- c("lrg", "svc", "rnf", "xgb", "rub", "zee")

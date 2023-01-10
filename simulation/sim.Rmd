@@ -193,6 +193,10 @@ saveRDS(sim_9, file = "sim_9.rds")               # save results
 ```
 
 ```{r}
+sim_6
+```
+
+```{r}
 # Error: C stack usage 7954040 is too close to the limit
 Cstack_info()
 ```

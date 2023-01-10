@@ -20,77 +20,80 @@ header-includes:
 \begin{titlepage}
 
 \begin{center}
-\Large Methodology and Statistics for the Behavioural, Biomedical and Social Sciences\\
-\vspace{0.15\textwidth}
-\textbf{\LARGE RESEARCH REPORT} 
 
+\textbf{\LARGE RESEARCH REPORT}
 \vspace{0.05\textwidth}
 
 \rule{\textwidth}{1pt}\\[0.8cm]
-
-\textbf { \LARGE Pilot Study: Assessing the impact of class imbalance on the performance of prediction models developed for dichotomous risk prediction.}
+\textbf { \Large Pilot Study: Assessing the impact of class imbalance on the performance of prediction models developed for dichotomous risk prediction.}
 \\ [0.5cm]
 
 \rule{\textwidth}{1pt}
 
-\vspace{0.1\textwidth}
-\LARGE{\textbf{Alex Carriero}\\
+\vspace{0.5in}
+\Large{\textbf{Alex Carriero}\\
 9028757}
 \end{center}
 \begin{Large}
 \begin{center}
-    \vspace{0.1\textwidth}
+    \vspace{0.5in}
     \textbf{Supervisors}\\
-    Dr. Maarten van Smeden\\
-    Dr. Kim Luijken\\
-    Dr. Ben van Calster\\
+      Dr. Maarten van Smeden\\
+      Dr. Kim Luijken\\
+      Dr. Ben van Calster\\
+    \vspace{1.2in}
+    \textit{Methodology and Statistics for the Behvavioural, Biomedical and Social Sciences}\\
+    \vspace{0.3in}
+    \textit{Utrecht Univeristy}\\
+    January, 2023\\
+
 \end{center}
 \end{Large}
 
-\vspace{0.1\textwidth}
+\vspace{0.2in}
 \begin{large}
-\textbf{Word count}: XXXX/2500
+\textbf{Word count}: 2473/2500
 \end{large}
 \end{titlepage}
 ```
 
 ## 1. Introduction
 
-Prediction modelling in medicine is receiving considerable attention.   Most often, the purpose of a clinical prediction model is to estimate a patient's risk of experiencing an outcome (e.g., disease).  Risk estimates are then used to inform clinical decisions [@annals; @achilles]. Due to the rare nature of many diseases, data available to train clinical prediction models often exhibit class imbalance (e.g., patients with the outcome are outnumbered by those without the outcome). When prediction models are trained using imbalanced data, model performance is diminished; it is the accuracy of the predictions for the minority class that suffer the most [@cip; @lp2; @yu]. Consequently, class imbalance correction methodologies are proposed as a solution [@cip; @summary_m].\
+Prediction modelling in medicine is receiving increased attention from the clinical community [@sandra]. Most often, the purpose of a clinical prediction model is to estimate a patient's risk of experiencing a particular health event (e.g., disease). Risk estimates are then used to inform clinical decisions; for instance, to decide if a patient is a good candidate for treatment [@annals; @achilles]. Due to the rare nature of many diseases, data available to train clinical prediction models often exhibit class imbalance (i.e., observations from patients with vs. without the event of interest are not equally represented in the data).  When prediction models are trained using imbalanced data, model performance is diminished; performance for the underrepresented class suffers the most [@cip; @lp2; @yu]. Consequently, class imbalance correction methodologies are proposed as a solution [@cip; @summary_m].\
 \
-While an abundance of imbalance correction methodologies exist [@summary_m; @lp; @summary_h], information regarding the effect of such corrections on model calibration is sparse.  Calibration is defined as the accuracy of the risk estimates produced by a prediction model [@achilles].  If clinicians intend to use predicted risks from a model to inform clinical decisions, the accuracy of the risk estimates is important.   If a model is poorly calibrated, it may produce predicted risks that consistently over- or under-estimate reality, or which are too extreme (too close of 0 or 1) or too modest [@achilles].   This can lead to poor treatment decisions or to clinicians communicating false reassurance or hope to patients [@achilles; @12days]. Therefore, it is vital that model calibration is assessed.\
+While an abundance of imbalance correction methodologies exist [@summary_m; @lp; @summary_h], information regarding the effect of such corrections on model calibration is sparse.  Calibration is defined as the accuracy of the risk estimates produced by a prediction model; it measures the agreement between risk estimates and observed event fractions in the data [@achilles].  It is best evaluated using a calibration plot [@nature].  If a model is poorly calibrated, it may produce risk estimates that are misleading [@achilles].   For instance, a poorly calibrated model may produce predicted risks that consistently over- or under-estimate true risk or that are too extreme (too close to 0 or 1) or too modest [@achilles].  This can lead to poor treatment decisions or to clinicians communicating false reassurance or hope to patients [@achilles; @12days]. Therefore, it is vital that model calibration is assessed for prediction models intended for use in clinical settings.\
 \
-Only one study has assessed the impact of imbalance corrections on model calibration. In this study the authors demonstrate that class imbalance corrections do more harm than good; implementing imbalance corrections resulted in dramatically deteriorated model calibration, to the point that no corrections were recommended [@ruben]. In this study, prediction models were developed using logistic regression or penalized logistic regression [@ruben].  Based on a recent systematic review of clinical prediction models, it is estimated that 25% of prediction models use logistic regression or penalized logistic regression [@constanza].  Therefore, the impact of imbalance corrections on model calibration for prediction models developed using other popular classification algorithms, such as support vector machine or random forest, is currently unknown.\
+Only one study has assessed the impact of imbalance corrections on model calibration. In this study, the authors demonstrate that class imbalance corrections do more harm than good; implementing imbalance corrections resulted in dramatically deteriorated model calibration, to the point that no corrections were recommended [@ruben]. In this study, prediction models were developed using logistic regression or penalized logistic regression [@ruben]. Most prediction models developed for clinical use do not use regression based methods [@constanza]. Rather, a recent systematic review of clinical prediction models indicated that other classification algorithms, like support vector machine and tree-based methods, are more common [@constanza].  The impact of imbalance corrections on model calibration is currently unknown for prediction models developed using these other classification algorithms. \
 \
-In this research project, we aim to determine the best practices for handling class imbalance when developing clinical prediction models for dichotomous risk prediction.
-Ultimately, we will systematically compare the effects of imbalance corrections on prediction models developed using common classification algorithms. 
-As a first step, we design and implement a pilot study to demonstrate the baseline performance of prediction models trained using imbalanced data. In this pilot study, we aim to answer the question: how does class imbalance affect the performance of clinical prediction models trained using a variety of classification algorithms?
+Motivated by the work of Goorbergh and colleagues [@ruben], we must ensure that the "cure" is not worse than the disease. In our research, we aim to assess the impact of imbalance corrections on model calibration for prediction models trained with a wide variety of classification algorithms including: linear classifiers (logistic regression, support vector machine), ensemble learning algorithms (random forest, XGBoost) and algorithms specifically designed to handle class imbalance (RUSBoost, EasyEnsemble). As a first step, we design and implement a pilot study (the focus of this report). In this pilot study, we use a simulation study to illustrate the baseline performance of prediction models trained in the presence of different class imbalance scenarios (no imbalance corrections are implemented). Furthermore, we aim to answer the question: *how does class imbalance affect the performance of clinical prediction models developed for dichotomous risk prediction?*
 
 \newpage 
 
 ## 2. Methods
 
-In this paper, we implemented a simulation study to investigate the effect of class imbalance on the performance prediction models developed using common classification algorithms. We adhere to the ADEMP guidelines for the design and reporting of our simulation study [@tim_morris].\
+In this research project, we aim to determine the best practices for handling class imbalance when developing clinical prediction models for dichotomous risk prediction.  As a first step, we used a pilot simulation study to illustrate the performance of prediction models in different class imbalance scenarios, without implementing imbalance corrections. In this paper, we present our pilot study; we adhere to the ADEMP guidelines for the design and reporting of our simulation study [@tim_morris].\
 
 **Aim**
 
-The aim of this pilot study was to investigate the effect of class imbalance on the performance of six classification algorithms.  In particular, we aimed to assess the out-of-sample predictive performance of prediction models trained with common classification algorithms, when the event fraction was varied across three levels and no imbalance corrections were implemented.\
+We aimed to assess the out-of-sample predictive performance of prediction models trained with six common classification algorithms, for three class imbalance scenarios. To illustrate the baseline performance of the prediction models for the various class imbalance scenarios, no imbalance corrections were applied to the data before training prediction models.\
 
 **Data-Generating Mechanism**
 
-Data for each class was generated independently from two distinct multivariate normal (mvn) distributions:\
+We generated data for each class independently using two distinct multivariate normal ($mvn$) distributions:\
 \
       Class 0: $\mathbf{X} \sim mvn( \pmb{\mu_0}, \pmb{\Sigma_0})$ = $mvn(\pmb{0}, \pmb{\Sigma_0})$\
 \
       Class 1: $\mathbf{X} \sim mvn( \pmb{\mu_1}, \pmb{\Sigma_1})$ = $mvn(\pmb{\Delta_\mu}, \pmb{\Sigma_0} - \pmb{\Delta_\Sigma})$\
 
-The parameters (mean vector and covariance matrix) of these data generating distributions were distinct between the classes. In the formulae above, $\pmb{\Delta_\mu}$ refers to the vector housing the difference in predictor means between the two classes. Similarly, $\pmb{\Delta_\Sigma}$ refers to the matrix housing the difference in predictor variances/covariances between the classes.\
+Here, class 0 refers to the negative class (non-events) and class 1 refers to the positive class (events). The differences in parameter values between the two classes are represented in the formulae above by $\pmb{\Delta_\mu}$ and $\pmb{\Delta_\Sigma}$; a vector and matrix comprised of the differences in predictor means, and variances/ covariances, between the classes, respectively.  We specified no variation in means among predictors within a class, making all elements in the vector $\pmb{\Delta_\mu}$ equivalent; denoted by $\delta_\mu$. Similarly, we specified no variation in predictor variances within a class, making all diagonal elements in the matrix $\pmb{\Delta_\Sigma}$ equivalent; diagonal elements are denoted by $\delta_\Sigma$.\
 \
-In class 0, all predictor means were fixed to zero and all variances were fixed to 1. In class 1, all means were non-zero and were stored in the vector $\pmb{\Delta_\mu}$. There was no variation in means among predictors within a class, thus, every element in the vector $\pmb{\Delta_\mu}$ was equivalent; denoted by $\delta_\mu$. Similarly, there was no variation in predictor variances within a class, so every diagonal element in $\pmb{\Delta_\Sigma}$ was equivalent; diagonal elements are denoted by $\delta_\Sigma$.\
+For class 0, we fixed all predictor means to zero and variances to 1. For class 1, all means were non-zero and are represented by the vector $\pmb{\Delta_\mu}$. Finally, we allowed $80$% of the predictors to covary. All non-zero correlations among predictors in each class were set to $0.2$.  To ensure the correlation among predictors was not stronger in one class, we fixed the correlation matrices of the two classes to be equal.  This was accomplished by computing the off-diagonal elements of $\pmb{\Delta_\Sigma}$ such that the correlation matrices of the two classes were equivalent. Note, the covariance matrices were *not* equivalent between the classes.\
+
+\newpage
+
+For instance, with 8 predictors:\
 \
-Finally, $80$% of the predictors were allowed to covary. All non-zero correlations among predictors in each class were set to $0.2$.   To ensure the correlation among predictors was not stronger in one class, the correlation matrices of the two classes were fixed to be equal.  This was accomplished by computing the off-diagonal elements of $\pmb{\Delta_\Sigma}$  such that the correlation matrices between the two classes were equivalent. Note, the covariance matrices were *not* equivalent between the classes. For example, with 8 predictors:\
-\
-mean and covariance structure for class 0, \begin{equation*}
+the mean and covariance structure for class 0 is, \begin{equation*}
 \pmb{\mu_0} = \begin{bmatrix}
  \\ 0 \\ 0 \\ 0\\ 0 \\ 0 \\ 0 \\ 0 \\ 0
 \end{bmatrix}, \pmb{\Sigma_0} = \begin{bmatrix}
@@ -105,7 +108,7 @@ mean and covariance structure for class 0, \begin{equation*}
 \end{bmatrix}
 \end{equation*}
 
-mean and covariance structure for class 1, \begin{equation*}
+and mean and covariance structure for class 1 is, \begin{equation*}
 \pmb{\mu_1} = \begin{bmatrix}
  \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu \\ \delta_\mu
 \end{bmatrix}, \pmb{\Sigma_1} = \begin{bmatrix}
@@ -117,20 +120,23 @@ z & z & z   & z & 1 - \delta_\Sigma & z & 0 & 0\\
 z & z & z   & z & z & 1 - \delta_\Sigma & 0 & 0\\
 0   & 0   & 0     &  0 & 0    & 0 & 1 - \delta_\Sigma & 0\\
 0   & 0   & 0     &  0 & 0    & 0 & 0 & 1 - \delta_\Sigma\\
-\end{bmatrix}
-\end{equation*}.\
+\end{bmatrix}.
+\end{equation*}\
 \
-Here, $z = (1-\delta_\Sigma)*0.2$, to ensure the correlation matrices of the two classes were equivalent.\
+Here, $z = (1-\delta_\Sigma)*0.2$, to ensure equivalent correlation matrices between the two classes.\
+
+**Scenarios**
+
+We simulated data to reflect three unique class imbalance scenarios (Table 1).  This was accomplished by varying the event fraction (proportion of patients with the event of interest) through the set {0.5, 0.2, 0.02}. For all scenarios, 8 predictors were generated and sample size ($N$) was determined as the minimum sample size required for the prediction model (given the number of predictors, event fraction and expected concordance statistic, using the R package `pmsampsize` [@pmsampsize].\
 \
-In the study we simulated data to reflect three unique scenarios.  This was accomplished by varying the event fraction through the set {0.5, 0.2, 0.02}. For all  scenarios, data for 8 predictors was generated and the sample size ($N$) was determined as the minimum sample size required for the prediction model using the R package `pmsampsize` [@pmsampsize].\
-\
-Under the assumption of normality for all predictors (in each class), the concordance statistic ($\Delta C$) of the data can be expressed as a function of $\pmb{\Delta_\mu}$, $\pmb{\Sigma_0}$ and $\pmb{\Sigma_1}$ [@mvauc].  For every scenario, the parameter values for the data generating distributions ($\delta_\mu$ and $\delta_\Sigma$) were selected to generate a $\Delta C$ Statistic $=0.85$. Their values were computed analytically, based on the following formula [@mvauc]:
+For every scenario, parameter values for the data generating distributions ($\delta_\mu$ and $\delta_\Sigma$) were selected to generate a concordance statistic ($C$) of $0.85$. Under the assumption of normality for all predictors (in each class), the concordance statistic of the data can be expressed as a function of $\pmb{\Delta_\mu}$, $\pmb{\Sigma_0}$ and $\pmb{\Sigma_1}$ [@mvauc]. Optimal values of $\delta_\mu$ and $\delta_\Sigma$ values were computed analytically, based on the following formula [@mvauc]:
 
 \begin{equation}
-\Delta C = \Phi \left( \sqrt{\pmb{\Delta_\mu}{'}\  (\pmb{\Sigma_0} + \pmb{\Sigma_1})^{-1} \ \pmb{\Delta_{\mu}}} \right).
+C = \Phi \left( \sqrt{\pmb{\Delta_\mu}{'}\  (\pmb{\Sigma_0} + \pmb{\Sigma_1})^{-1} \ \pmb{\Delta_{\mu}}} \right).
 \end{equation}
 \
-In equation (1), $\Phi$ represents the cumulative density function (cdf) of the standard normal distribution; $\pmb{\Delta_\mu}$, $\pmb{\Sigma_0}$ and $\pmb{\Sigma_1}$ maintain their previous definitions. To ensure a unique solution $\delta_\Sigma$ was  fixed at 0.3 for each scenario, while equation (1) was solved to yield the appropriate value of $\delta_\mu$ in each scenario.\
+\
+In equation (1), $\Phi$ represents the cumulative density function of the standard normal distribution; $\pmb{\Delta_\mu}$, $\pmb{\Sigma_0}$ and $\pmb{\Sigma_1}$ maintain their previous definitions. To ensure a unique solution, $\delta_\Sigma$ was fixed at 0.3 for each scenario, while equation (1) was solved to yield the appropriate value of $\delta_\mu$ in each scenario.\
 \
 Finally, given that data for each class were generated independently, we had direct control over how many observations were generated under each class. The number of observations from the positive class ($n_1$) was sampled from the binomial distribution with probability equal to the specified event fraction. The number of observations in the negative class ($n_0$) was then be computed as $N - n_1$, where $N$ is the minimum sample size specified for the prediction model.\
 \
@@ -141,7 +147,7 @@ Parameter values for the data generating distributions of the simulation scenari
 library(tidyverse)
 library(kableExtra)
 
-read.csv("table.csv") %>%
+read.csv("data/table.csv") %>%
   filter(npred == 8, n == "N")%>% 
   dplyr::select(ef, npred, ss, dmu, dsig, AUC)%>%
   rename("Event Fraction"    = ef, 
@@ -149,7 +155,7 @@ read.csv("table.csv") %>%
          "N"                 = ss, 
          "$\\delta_\\mu$"    = dmu, 
          "$\\delta_\\Sigma$" = dsig, 
-         "$\\Delta C$"       = AUC)%>%
+         "$C$"       = AUC)%>%
   kbl(booktabs = T, escape = F,
       linesep = "\\addlinespace",
       caption = "Summary of the data generating parameters for each simulation scenario.")%>%
@@ -159,11 +165,11 @@ read.csv("table.csv") %>%
 \
 **Simulation Methods**\
 \
-Under each simulation scenario, $200$ data sets were generated. Each data set was comprised of training and validation data. The training and validation data were generated independently using identical data generating mechanisms; this was done to ensure a similar event fraction in the training and validation data. The validation data was generated to be 10x larger than the training set.\
+Under each simulation scenario, $200$ data sets were generated. Each data set was comprised of training and validation data. The training and validation data were generated independently using identical data generating mechanisms. Validation data sets were generated to be ten times larger than the training data sets.\
 \
 For each generated data set,  six prediction models were developed, each using a different classification algorithm. All prediction models were trained using the training data. Out-of-sample performance was then assessed using the validation data.\
 \
-Classification algorithms were selected based on a systematic review identifying common algorithms used to develop prediction models in a medical context [@constanza]. These algorithms include: logistic regression, support vector machine, random forest and XGBoost.  Additionally, based on literature summarizing common strategies to handle class imbalance [@yu; @summary_m; @lp; @kaur], we include two ensemble learning algorithms designed specifically to handle class imbalance: RUSBoost and EasyEnsemble. Classification algorithms were implemented with their default hyper-parameters; no hyper-parameter tuning was conducted. All classification algorithms and the R packages used for their implementation are summarized in Table 2.\
+Classification algorithms were selected based on a systematic review identifying common algorithms used to develop prediction models in a medical context [@constanza]. These algorithms include: logistic regression, support vector machine, random forest and XGBoost.  Additionally, based on literature summarizing common strategies to handle class imbalance [@yu; @summary_m; @lp; @kaur], we included two ensemble learning algorithms designed specifically to handle class imbalance: RUSBoost and EasyEnsemble. Classification algorithms were implemented with their default hyper-parameters; no hyper-parameter tuning was conducted. All classification algorithms and the R packages used for their implementation are summarized in Table 2.\
 
 ```{r, echo = F, warning = F, message = F}
 # Summary <- c("\\bf{Imbalance Corrections}", 
@@ -201,24 +207,26 @@ cbind(Name, Abbreviation, Implementation)%>%
   # pack_rows("Classification Algorithms", 5, 10)
 ```
 
+\newpage
+
 **Performance Measures**
 
-Out-of-sample model performance was assessed using measures of calibration, discrimination and overall performance. All performance metrics were computed using the validation data.\
+Out-of-sample model performance was assessed using measures of calibration, discrimination and overall performance. All performance metrics were computed using validation data.\
 \
-Calibration refers to the accuracy of the risk estimates; it measures the agreement between the estimated probabilities and observed proportions in the data [@achilles; @epi; @nature]. A calibration plot is the recommended method for evaluating model calibration [@nature].   For each simulation iteration, we fitted a flexible calibration curve for each model, using loess regression. In a flexible calibration curve, when risk predictions (x-axis) correspond well to the observed proportions (y-axis), the curve follows a diagonal line ($y = x$) [@achilles]. In addition to the calibration plots, calibration intercept and slope were calculated.  With respect to calibration intercept and slope, ideal calibration is represented by values of 0 and 1, respectively.\
+Calibration was measured using both visual and empirical metrics.  For each simulation iteration, we fitted a flexible calibration curve for each model; this was done with loess regression using `ggplot2` [@gg]. In a flexible calibration curve, when estimated probabilities (x-axis) correspond well with the observed proportions in the data (y-axis), the curve follows a diagonal line ($y = x$) [@achilles]. In addition to the calibration plots, calibration intercept and slope were calculated.  With respect to calibration intercept and slope, ideal calibration is represented by values of 0 and 1, respectively [@epi].\
 \
-Discrimination refers to a model's ability to distinguish between the classes [@nature].  The concordance statistic ($\Delta$ C) was used to measure model discrimination; computed using the R package `pROC` [@pROC]. This is the most common metric to asses discrimination and for dichotomous risk prediction, it is equivalent to the area under the Receiver Operating Characteristic (ROC) curve [@epi; @nature]. A model which perfectly discriminates between the classes will have a $\Delta$C-statistic of 1; the minimum value for this statistic is 0.5.\
+Discrimination refers to a model's ability to distinguish between the classes [@nature].  The concordance statistic was used to measure model discrimination; computed using the R package `pROC` [@pROC]. This is the most common metric to asses discrimination and for dichotomous risk prediction, it is equivalent to the area under the Receiver Operator Characteristic curve [@epi; @nature]. A model which perfectly discriminates between the classes will have an concordance statistic of 1; the minimum value for this statistic is 0.5.\
 \
-Overall performance was measured by brier score. This metric reflects both model discrimination and calibration and is calculated according to the following formula [@epi]: 
+Overall performance was measured by the Brier score. This metric reflects both model discrimination and calibration and is calculated according to the following formula [@epi]: 
 
 \begin{equation}
-\mathrm{Brier Score} = \frac{1}{N} \sum^{N}_{i = 1} (p_i - o_i)^2
+\mathrm{Brier \ Score} = \frac{1}{N} \sum^{N}_{i = 1} (p_i - o_i)^2,
 \end{equation}
 
 where $N$ is the sample size, $p_i$ represents the estimated probability for the $i$th individual and $o_i$ represents
-the observed outcome (0 or 1) for the $i$th individual. In an ideal model, estimated probabilities approximate the observed outcome well for all individuals; ideal models produce a brier score near to zero.\
+the observed outcome (0 or 1) for the $i$th individual. In an ideal model, estimated probabilities approximate the observed outcome well for all individuals; ideal models produce a Brier score near to zero.\
 \
-For empirical measures of model performance ($\Delta C$ statistic, brier score, calibration intercept and slope), the mean over all iterations and corresponding monte carlo error were reported. No measures of classification accuracy were considered.  Measures of classification accuracy require a decision threshold to be selected and in this simulation study, there was not sufficient context to justify where to place a threshold.\
+For empirical measures of model performance (concordance statistic, Brier score, calibration intercept and slope), the mean over all iterations and corresponding Monte Carlo error were reported.\
 
 **Software**
 
@@ -228,9 +236,9 @@ All analyses were conducting using R version 4.1.2 [@r].
 
 Results are summarized in Table 3 and calibration plots are displayed in Figure 1.\
 \
-For approximately balanced data (event fraction $= 0.5$), all algorithms, except XG and EE, were well calibrated. While, on average, both XG and EE had calibration intercepts near zero, their average calibration slopes dramatically deviated from 1.  We see that for XG, the predicted risks above 0.5 overestimated true risk, while the predicted risks below 0.5 underestimated true risk (Figure 1a). In other words, the XG models resulted in risk estimates which were too extreme (calibration slope = $0.464$).  The opposite pattern was true for EE; EE produced risk estimates which were too moderate (calibration slope = $2.279$). In the balanced data scenario, SVM and LR had similar discrimination and overall performance and both outperformed the other algorithms (Table 3).\
+For the class balanced scenario (event fraction $= 0.5$), all algorithms, except XG and EE, were well calibrated on average. While both XG and EE had average calibration intercepts near zero, their average calibration slopes deviated from 1.  We see that for XG, the predicted risks above 0.5 overestimated true risk, while the predicted risks below 0.5 underestimated true risk (Figure 1a). In other words, the XG models resulted in risk estimates which were too extreme (calibration slope = $0.464$).  The opposite pattern was true for EE; EE produced risk estimates which were too moderate (calibration slope = $2.279$). In the class balanced scenario, SVM and LR had similar discrimination and overall performance and both outperformed the other algorithms (Table 3).\
 
-With the event fraction at 0.2, all algorithms exhibited worse calibration, on average, compared to the balanced data scenario.  While the LR, SVM and RF maintained adequate calibration in this scenario, XG, RB and EE all, on average, produced predicted risks that dramatically over-estimated true risk (Figure 1b). With respect to discrimination and overall performance, in this scenario, LR was the best performing algorithm (Table 3).\
+For the moderate class imbalance scenario (event fraction $=0.2$), all algorithms exhibited worse calibration, on average, compared to the class balanced scenario.  While LR, SVM and RF maintained adequate calibration in this scenario, XG, RB and EE all, on average, produced predicted risks that dramatically over-estimated true risk (Figure 1b). In this scenario, we see a slight increase in the variation of the calibration curves produced across the iterations compared to the class balanced scenario (Figure 1b).  This was especially apparent for SVM; calibration slope estimates for SVM also varied greatly across the iterations (Table 3). With respect to discrimination and overall performance, in this scenario, LR was the best performing algorithm (Table 3).\
 
 At an event fraction of 0.02, all algorithms exhibited miscalibration.  From Figure 1c, we see that for LR, SVM and RF, there was large variation in the calibration curves produced across the simulation iterations. Meanwhile, for XG, RB, and EE, the calibration curves did not vary much across the iterations, rather, they exhibited a specific pattern of miscalibration: all predicted risks over-estimated true risk. With respect to discrimination and overall performance, in this scenario, LR was again, the best performing algorithm (Table 3).\
 
@@ -247,9 +255,9 @@ mean((outcome-trivial)^2)
 
 
 ```{r,  echo = F, warning = F, message = F}
-four <- readRDS("sim_4.rds")
-five <- readRDS("sim_5.rds")
-six  <- readRDS("sim_6.rds")
+four <- readRDS("data/sim_4.rds")
+five <- readRDS("data/sim_5.rds")
+six  <- readRDS("data/sim_6.rds")
 
 stats <- cbind(four$stats, five$stats, six$stats)
 stats <- as.data.frame(t(stats))
@@ -270,7 +278,7 @@ stats <-
   # unite("CS", 4:5, remove = T, sep = " ") %>%
   # as.matrix()
 
-colnames(stats)<- c("$\\Delta C$ Statistic", "Brier Score", "Calibration Intercept", "Calibration Slope")
+colnames(stats)<- c("Concordance Statistic", "Brier Score", "Calibration Intercept", "Calibration Slope")
 # colnames(stats)<- c(rep(c("mean", "sd"), 4))
 rownames(stats)<- c(rep(c("LR", "SVM", "RF", 
                           "XG", "RB", "EE"), 3))
@@ -280,7 +288,7 @@ stats %>%
                   "\\addlinespace \\addlinespace"),
       align = "lcccc",
       # col.names = c(rep(c("mean", "mc error"), 4)),
-      caption = "Mean (monte carlo error) of performance metrics across $200$ iterations in each simulation scenario.")%>%
+      caption = "Mean (Monte Carlo error) of performance metrics across $200$ iterations in each simulation scenario.")%>%
   kable_styling(full_width = T,  latex_options ="hold_position", font_size = 10) %>% 
   pack_rows("Event Fraction: 0.5",   1,  6) %>%
   pack_rows("Event Fraction: 0.2",   7, 12) %>%
@@ -294,7 +302,7 @@ stats %>%
 ```
 
 
-```{r, echo = F, fig.align='center', out.height="25%", fig.ncol = 1, fig.cap="Visual representation of model calibration for each simulation scenario in the Pilot Study.", fig.subcap=c("Flexible calibration curves with event fraction: 0.5.", "Flexible calibration curves with event fraction: 0.2", "Flexible calibration curves with event fraction: 0.02")}
+```{r, echo = F, fig.align='center', out.height="25%", fig.ncol = 1, fig.cap="Visual representation of model calibration for each simulation scenario.", fig.subcap=c("Flexible calibration curves with event fraction: 0.5.", "Flexible calibration curves with event fraction: 0.2", "Flexible calibration curves with event fraction: 0.02")}
 library(knitr)
 include_graphics(c("images/plot_4.png", "images/plot_5.png", "images/plot_6.png"))
 ```
@@ -304,11 +312,11 @@ include_graphics(c("images/plot_4.png", "images/plot_5.png", "images/plot_6.png"
 
 ## 4. Discussion
 
-In this paper we investigated the impact of class imbalance on the performance of clinical prediction models developed with six classification algorithms.  The results of this study highlighted the baseline performance of these classification algorithms in the presence of class imbalance; no imbalance corrections were applied to the data before training prediction models. Overall, we saw that as the event fraction was decreased, models exhibited increased miscalibration. At the most extreme event fraction (0.02), models developed with LR, SVM and RF exhibited miscalibration in an unpredictable way.  There was large variation among the flexible calibration curves across the simulation iterations; some curves consistently over-estimated true risk while others consistently under-estimated true risk.  For models developed with XG, RB, and EE, at the most extreme event fraction, there was a very specific pattern of miscalibration; all over-estimated true risk.  Overall, we demonstrated that as class imbalance increased, both calibration and discrimination decreased, for all prediction models considered.\
+In this paper we investigated the impact of class imbalance on the performance of clinical prediction models developed with six classification algorithms.  The results of this study illustrate the performance of these classification algorithms across three class imbalance scenarios; no imbalance corrections were applied to the data before training prediction models. Overall, we saw that as the event fraction was decreased, models exhibited increased miscalibration. At the most extreme event fraction (0.02), models developed with LR, SVM and RF exhibited miscalibration in an unpredictable way.  There was large variation among the flexible calibration curves across the simulation iterations; some curves consistently over-estimated true risk while others consistently under-estimated true risk.  For models developed with XG, RB, and EE, at the most extreme event fraction, there was a very specific pattern of miscalibration; all over-estimated true risk.  Overall, we demonstrated that as class imbalance increased, both calibration and discrimination decreased, for all prediction models considered.\
 \
-We note two significant limitations to this study. First, brier score appeared to be an uninformative measure of overall performance when class imbalance was extreme.  With an event fraction of 0.02, a trivial majority classifier (a model that predicts everyone will belong to the majority class) would yield a brier score of 0.02.  Therefore, in our future work, we will utilize another metric of overall performance, such a re-scaled brier score which is known to be more informative in the presence of class imbalance [@epi]. Second, models developed with classification algorithms other than logistic regression may have performed worse than expected due to the lack of hyper-parameter tuning. In particular, RB and EE preformed substantially worse than expected.  These algorithms are designed to handle class imbalance, yet, they had worse overall performance than a trivial majority classifier at the most extreme event fraction. The relatively poor performance of these algorithms may be due to the lack of hyper-parameter tuning, therefore, future work will allow for hyper-parameter tuning.\
+We note two significant limitations to this study. First, Brier score appeared to be an uninformative measure of overall performance when class imbalance was extreme.  With an event fraction of 0.02, a trivial majority classifier (a model that predicts everyone will belong to the majority class) would yield a Brier score of 0.02.  Therefore, in our future work, we will utilize another metric of overall performance, such a re-scaled Brier score which is known to be more informative in the presence of class imbalance [@epi]. Second, models developed with classification algorithms other than logistic regression may have performed worse than expected due to the lack of hyper-parameter tuning. In particular, RB and EE preformed substantially worse than expected.  These algorithms are designed to handle class imbalance, yet, they had worse overall performance than a trivial majority classifier at the most extreme event fraction. The relatively poor performance of these algorithms may be due to the lack of hyper-parameter tuning, therefore, future work will allow for hyper-parameter tuning.\
 \
-Class imbalance is exceedingly common in medical data sets and in this pilot study we have demonstrated that prediction models may be miscalibrated in the presence of extreme class imbalance.  Future work will investigate the best practices for handling class imbalance without compromising model calibration. Ruben and colleagues [@ruben] have demonstrated that imbalance corrections may do more harm than good with respect to model calibration for prediction models developed using logistic regression [@ruben].  In our future work we will extend this research by assessing the impact of imbalance corrections and re-calibration procedures on prediction models developed using the wide variety of algorithms considered in this pilot study.  
+Class imbalance is common in medical data sets and in this pilot study we have demonstrated that prediction models may be miscalibrated in the presence of extreme class imbalance.  Future work will investigate the best practices for handling class imbalance without compromising model calibration. Goorbergh and colleagues [@ruben] have demonstrated that imbalance corrections may do more harm than good with respect to model calibration for prediction models developed using logistic regression [@ruben].  In our future work we will extend this research by assessing the impact of imbalance corrections and re-calibration procedures on prediction models developed using the wide variety of algorithms considered in this pilot study.  
 
 
 
